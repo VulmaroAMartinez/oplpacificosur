@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+/* Rutas relativas desde la ubicación de este archivo (src/) */
+@source "./blocks/**/*.js";
+@source "../templates/**/*.html";
+@source "../parts/**/*.html";
+
+/* Animación del Hero (Nativa v4) */
+@theme {
+    --animate-fade-in-left: fade-in-left 0.8s ease-out forwards;
+}
+
+@keyframes fade-in-left {
+    0% {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

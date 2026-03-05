@@ -1,0 +1,23 @@
+{
+  "name": "corporate-theme",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start & npx @tailwindcss/cli -i ./src/style.css -o ./build/style.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.1",
+    "@wordpress/scripts": "^31.5.0",
+    "tailwindcss": "^4.2.1"
+  },
+  "dependencies": {
+    "@wordpress/block-editor": "^15.13.1",
+    "@wordpress/blocks": "^15.13.0",
+    "@wordpress/i18n": "^6.13.0"
+  }
+}
