@@ -9,7 +9,7 @@ export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage, t, getLink } = useLanguage();
 
   // En páginas internas (no home), el navbar siempre debe tener fondo
   const isHome = location.pathname === '/';
@@ -23,7 +23,7 @@ export const Navbar = () => {
   }, []);
 
   // Determinar clases del navbar basado en scroll y ubicación
-  const navbarClasses = isHome 
+  const navbarClasses = isHome
     ? `fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled ? 'bg-slate-900 shadow-lg py-4' : 'bg-transparent py-6'
       }`
@@ -33,8 +33,6 @@ export const Navbar = () => {
     const isActive = location.pathname === path;
     return `hover:text-orange-400 transition-colors ${isActive ? 'text-orange-500' : 'text-white'}`;
   };
-
-  const getLink = (path: string) => `${path}?lang=${language}`;
 
   return (
     <nav className={navbarClasses}>

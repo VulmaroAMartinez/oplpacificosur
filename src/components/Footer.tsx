@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 
 export const Footer = () => {
-  const { t, language } = useLanguage();
-  const getLink = (path: string) => `${path}?lang=${language}`;
+  const { t, getLink } = useLanguage();
 
   return (
     <footer className="bg-slate-950 text-slate-400 text-sm">

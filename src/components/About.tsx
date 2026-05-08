@@ -3,8 +3,7 @@ import { CheckCircle2, Target, Eye, Award, ChevronLeft, ChevronRight } from 'luc
 import { useLanguage } from '../context/LanguageContext';
 
 export const About = () => {
-  const { t, language } = useLanguage();
-  const getLink = (path: string) => `${path}?lang=${language}`;
+  const { t, getLink } = useLanguage();
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const [slidesToShow, setSlidesToShow] = React.useState(3);
   const [isTransitioning, setIsTransitioning] = React.useState(true);
