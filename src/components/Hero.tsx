@@ -1,12 +1,72 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ChevronRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
+const TYPING_SPEED = 55;
+const PAUSE_BETWEEN = 280;
+
 export const Hero = () => {
-  const { t, language } = useLanguage();
-  
-  const getLink = (path: string) => `${path}?lang=${language}`;
+  const { t, getLink, language } = useLanguage();
+
+  const titleStart = t('hero.title_start') as string;
+  const titleHighlight = t('hero.title_highlight') as string;
+
+  const [displayedStart, setDisplayedStart] = useState('');
+  const [displayedHighlight, setDisplayedHighlight] = useState('');
+  const [phase, setPhase] = useState<'start' | 'pause' | 'highlight' | 'done'>('start');
+  const [cursorVisible, setCursorVisible] = useState(true);
+
+  // Reiniciar typewriter al cambiar idioma
+  useEffect(() => {
+    setDisplayedStart('');
+    setDisplayedHighlight('');
+    setPhase('start');
+  }, [language]);
+
+  // Lógica del typewriter
+  useEffect(() => {
+    if (phase === 'start') {
+      if (displayedStart.length < titleStart.length) {
+        const t = setTimeout(() => {
+          setDisplayedStart(titleStart.slice(0, displayedStart.length + 1));
+        }, TYPING_SPEED);
+        return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => setPhase('pause'), PAUSE_BETWEEN);
+        return () => clearTimeout(t);
+      }
+    }
+
+    if (phase === 'pause') {
+      const t = setTimeout(() => setPhase('highlight'), 100);
+      return () => clearTimeout(t);
+    }
+
+    if (phase === 'highlight') {
+      if (displayedHighlight.length < titleHighlight.length) {
+        const t = setTimeout(() => {
+          setDisplayedHighlight(titleHighlight.slice(0, displayedHighlight.length + 1));
+        }, TYPING_SPEED);
+        return () => clearTimeout(t);
+      } else {
+        setPhase('done');
+      }
+    }
+  }, [displayedStart, displayedHighlight, phase, titleStart, titleHighlight]);
+
+  // Cursor parpadeante
+  useEffect(() => {
+    const interval = setInterval(() => setCursorVisible(v => !v), 530);
+    return () => clearInterval(interval);
+  }, []);
+
+  const Cursor = ({ active }: { active: boolean }) => (
+    <span
+      className="inline-block w-[3px] h-[0.85em] bg-orange-400 ml-1 align-middle"
+      style={{ opacity: active && cursorVisible ? 1 : 0, transition: 'opacity 0.1s' }}
+    />
+  );
 
   return (
     <section id="inicio" className="relative h-screen min-h-[600px] flex items-center">
@@ -33,12 +93,19 @@ export const Hero = () => {
               {t('hero.subtitle')}
             </span>
           </div>
+
           <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6">
-            {t('hero.title_start')} <br />
+            <span>
+              {displayedStart}
+              <Cursor active={phase === 'start' || phase === 'pause'} />
+            </span>
+            <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
-              {t('hero.title_highlight')}
+              {displayedHighlight}
+              <Cursor active={phase === 'highlight' || phase === 'done'} />
             </span>
           </h1>
+
           <p className="text-lg md:text-xl text-slate-300 mb-8 max-w-lg leading-relaxed">
             {t('hero.description')}
           </p>
@@ -59,8 +126,6 @@ export const Hero = () => {
           </div>
         </motion.div>
       </div>
-
-      
     </section>
   );
 };
