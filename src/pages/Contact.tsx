@@ -17,13 +17,40 @@ function validateEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function validateForm(data: { name: string; email: string; message: string }): string | null {
-  if (!data.name || data.name.trim().length < 2) return 'El nombre es obligatorio (mínimo 2 caracteres).';
-  if (!data.email || !validateEmail(data.email)) return 'Ingrese un correo electrónico válido.';
-  if (!data.message || data.message.trim().length < 10) return 'El mensaje debe tener al menos 10 caracteres.';
-  if (data.name.length > 100) return 'El nombre no puede exceder 100 caracteres.';
-  if (data.message.length > 5000) return 'El mensaje no puede exceder 5000 caracteres.';
+/** Identificadores alineados con `services.items.*` (mismo orden que en la web). */
+const CONTACT_SERVICE_IDS = [
+  'customs',
+  'sea_freight',
+  'cargo_services',
+  'anchor_services',
+  'sailboat_services',
+  'ship_services',
+  'other'
+] as const;
+
+type ContactServiceId = (typeof CONTACT_SERVICE_IDS)[number];
+
+function validateContactForm(
+  data: { name: string; email: string; message: string },
+  err: {
+    name_min: string;
+    email_invalid: string;
+    message_min: string;
+    name_max: string;
+    message_max: string;
+  }
+): string | null {
+  if (!data.name || data.name.trim().length < 2) return err.name_min;
+  if (!data.email || !validateEmail(data.email)) return err.email_invalid;
+  if (!data.message || data.message.trim().length < 10) return err.message_min;
+  if (data.name.length > 100) return err.name_max;
+  if (data.message.length > 5000) return err.message_max;
   return null;
+}
+
+function serviceInterestLabel(id: string, t: (key: string) => string): string {
+  if (id === 'other') return t('contact.service_other');
+  return t(`services.items.${id}.title`);
 }
 
 export const Contact = () => {
@@ -36,23 +63,30 @@ export const Contact = () => {
     email: '',
     company: '',
     phone: '',
-    service: 'Flete Marítimo',
+    service: 'customs' as ContactServiceId,
     message: ''
   });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === 'service' ? (value as ContactServiceId) : value
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
     setErrorMessage('');
+
+    if (!WEB3FORMS_ACCESS_KEY) {
+      setStatus('error');
+      setErrorMessage(t('contact.errors.missing_key'));
+      return;
+    }
 
     // ── Anti-spam check 1: Honeypot ──────────────────────────
     if (honeypotRef.current && honeypotRef.current.value) {
@@ -72,12 +106,17 @@ export const Contact = () => {
     // ── Anti-spam check 3: Rate limiting ─────────────────────
     if (sessionSubmissions >= MAX_SUBMISSIONS_PER_SESSION) {
       setStatus('error');
-      setErrorMessage('Ha excedido el número máximo de envíos. Inténtelo más tarde.');
+      setErrorMessage(t('contact.errors.rate_limit'));
       return;
     }
 
-    // ── Validación del frontend ──────────────────────────────
-    const validationError = validateForm(formData);
+    const validationError = validateContactForm(formData, {
+      name_min: t('contact.errors.name_min'),
+      email_invalid: t('contact.errors.email_invalid'),
+      message_min: t('contact.errors.message_min'),
+      name_max: t('contact.errors.name_max'),
+      message_max: t('contact.errors.message_max')
+    });
     if (validationError) {
       setStatus('error');
       setErrorMessage(validationError);
@@ -93,12 +132,11 @@ export const Contact = () => {
           access_key: WEB3FORMS_ACCESS_KEY,
           subject: `[OPL Pacífico Sur] Nuevo mensaje de ${formData.name}`,
           from_name: 'OPL Pacífico Sur Web',
-          // Datos del formulario
           name: formData.name,
           email: formData.email,
-          phone: formData.phone || 'No proporcionado',
-          company: formData.company || 'No proporcionado',
-          service: formData.service,
+          phone: formData.phone || t('contact.not_provided'),
+          company: formData.company || t('contact.not_provided'),
+          service: serviceInterestLabel(formData.service, t),
           message: formData.message,
           // Anti-spam de Web3Forms
           botcheck: '', // Web3Forms honeypot
@@ -115,17 +153,16 @@ export const Contact = () => {
         setStatus('success');
         setFormData({
           name: '', email: '', company: '', phone: '',
-          service: 'Flete Marítimo', message: ''
+          service: 'customs', message: ''
         });
       } else {
-        throw new Error(result.message || 'Error al enviar');
+        throw new Error(result.message || t('contact.errors.submit_failed'));
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error submitting form:', error);
       setStatus('error');
-      setErrorMessage(
-        error.message || 'Hubo un error al enviar el mensaje. Por favor intente nuevamente.'
-      );
+      const msg = error instanceof Error ? error.message : '';
+      setErrorMessage(msg || t('contact.errors.submit_failed'));
     }
   };
 
@@ -136,104 +173,96 @@ export const Contact = () => {
   };
 
   return (
-    <div className="pt-20 bg-white min-h-screen">
-      <div className="container mx-auto px-4 md:px-8 py-16">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-orange-500 font-bold tracking-widest uppercase text-sm">{t('contact.section_subtitle')}</span>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mt-2 mb-4">{t('contact.title')}</h1>
-          <p className="text-slate-600 text-lg">{t('contact.desc')}</p>
+    <div className="min-h-screen bg-white pb-20 pt-24">
+      <div className="container mx-auto px-4 md:px-8">
+        <div className="mx-auto mb-16 max-w-3xl text-center">
+          <span className="text-sm font-bold uppercase tracking-widest text-orange-500">{t('contact.section_subtitle')}</span>
+          <h1 className="mt-2 mb-4 text-4xl font-bold text-slate-900 md:text-5xl">{t('contact.title')}</h1>
+          <p className="text-lg text-slate-600">{t('contact.desc')}</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 max-w-6xl mx-auto">
-          {/* Contact Info */}
-          <div className="lg:col-span-2 space-y-8">
-            <div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-6">{t('contact.info_title')}</h3>
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
+          <div>
+            <div className="mb-8 rounded-sm bg-slate-50 p-8">
+              <h3 className="mb-6 text-2xl font-bold text-slate-900">{t('contact.info_title')}</h3>
               <ul className="space-y-6">
                 <li className="flex items-start gap-4">
-                  <div className="bg-orange-100 p-3 rounded-full text-orange-500">
+                  <div className="rounded-full bg-orange-100 p-3 text-orange-500">
                     <MapPin size={24} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900">Dirección</h4>
-                    <p className="text-slate-600">Tapachula, Chiapas, México</p>
+                    <h4 className="font-bold text-slate-900">{t('contact.info.address_heading')}</h4>
+                    <p className="text-slate-600">{t('contact.info.address_value')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
-                  <div className="bg-orange-100 p-3 rounded-full text-orange-500">
+                  <div className="rounded-full bg-orange-100 p-3 text-orange-500">
                     <Phone size={24} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900">Teléfono</h4>
-                    <p className="text-slate-600">+52 962 123 4567</p>
-                    <p className="text-slate-500 text-sm">Lunes a Viernes, 8:00 AM - 6:00 PM</p>
+                    <h4 className="font-bold text-slate-900">{t('contact.info.phone_heading')}</h4>
+                    <p className="text-slate-600">{t('contact.info.phone_value')}</p>
+                    <p className="text-sm text-slate-500">{t('contact.info.phone_hours')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
-                  <div className="bg-orange-100 p-3 rounded-full text-orange-500">
+                  <div className="rounded-full bg-orange-100 p-3 text-orange-500">
                     <Mail size={24} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900">Email</h4>
-                    <p className="text-slate-600">info@oplpacificosur.com</p>
+                    <h4 className="font-bold text-slate-900">{t('contact.info.email_heading')}</h4>
+                    <p className="text-slate-600">{t('contact.info.email_value')}</p>
                   </div>
                 </li>
               </ul>
             </div>
 
-            <div className="relative h-64 rounded-sm overflow-hidden shadow-md">
+            <div className="relative h-64 overflow-hidden rounded-sm shadow-md">
               <img
                 src="https://images.unsplash.com/photo-1618577520246-bad40975f401?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb3Jwb3JhdGUlMjBtZWV0aW5nJTIwc2hpcHBpbmclMjBpbmR1c3RyeXxlbnwxfHx8fDE3NzAyMjc3MDh8MA&ixlib=rb-4.1.0&q=80&w=1080"
-                alt="Customer Service Team"
-                className="w-full h-full object-cover"
+                alt={t('contact.image_alt')}
+                className="h-full w-full object-cover"
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center">
-                <p className="text-white font-bold text-xl">{t('contact.support_badge')}</p>
+              <div className="absolute inset-0 flex items-center justify-center bg-slate-900/40">
+                <p className="text-xl font-bold text-white">{t('contact.support_badge')}</p>
               </div>
             </div>
           </div>
 
-          {/* Form */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="lg:col-span-3 bg-white p-8 rounded-sm shadow-xl border-t-4 border-orange-500"
+            className="rounded-sm border-t-4 border-orange-500 bg-white p-8 shadow-xl"
           >
-            <h3 className="text-2xl font-bold text-slate-900 mb-6">{t('contact.form_title')}</h3>
+            <h3 className="mb-6 text-2xl font-bold text-slate-900">{t('contact.form_title')}</h3>
 
             {status === 'success' ? (
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="text-center py-12"
-              >
-                <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">{t('contact.success_title')}</h3>
-                <p className="text-slate-600 mb-6">{t('contact.success_msg')}</p>
+              <div className="flex flex-col items-center justify-center rounded-sm bg-green-50 py-12 text-center">
+                <CheckCircle size={64} className="mb-4 text-green-500" />
+                <h4 className="mb-2 text-2xl font-bold text-green-700">{t('contact.success_title')}</h4>
+                <p className="mb-6 text-green-600">{t('contact.success_msg')}</p>
                 <button
+                  type="button"
                   onClick={resetForm}
-                  className="text-orange-500 font-bold hover:text-orange-600 transition-colors"
+                  className="rounded-sm bg-green-600 px-6 py-2 font-bold text-white transition-colors hover:bg-green-700"
                 >
                   {t('contact.btn_new')}
                 </button>
-              </motion.div>
+              </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-                {/* ── Honeypot (invisible para usuarios, visible para bots) ── */}
-                <div className="absolute -left-[9999px]" aria-hidden="true">
-                  <label htmlFor="website_url">Website</label>
-                  <input
-                    type="text"
-                    name="website_url"
-                    id="website_url"
-                    ref={honeypotRef}
-                    tabIndex={-1}
-                    autoComplete="off"
-                  />
-                </div>
+              <form onSubmit={handleSubmit} className="relative space-y-6" noValidate>
+                {/* Honeypot: sin texto "Website" (evita confusión y lectores de pantalla); oculto de forma fiable */}
+                <input
+                  type="text"
+                  name="company_website_trap"
+                  ref={honeypotRef}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="pointer-events-none fixed top-0 left-0 h-px w-px opacity-0 overflow-hidden"
+                />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -260,7 +289,7 @@ export const Contact = () => {
                       value={formData.phone}
                       onChange={handleChange}
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none rounded-sm transition-colors"
-                      placeholder="+52 ..."
+                      placeholder={t('contact.placeholders.phone')}
                     />
                   </div>
                 </div>
@@ -304,17 +333,16 @@ export const Contact = () => {
                     onChange={handleChange}
                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none rounded-sm transition-colors"
                   >
-                    <option>Flete Marítimo</option>
-                    <option>Transporte Terrestre</option>
-                    <option>Almacenaje y Distribución</option>
-                    <option>Aduanas</option>
-                    <option>Carga de Proyecto</option>
-                    <option>Otro</option>
+                    {CONTACT_SERVICE_IDS.map((id) => (
+                      <option key={id} value={id}>
+                        {serviceInterestLabel(id, t)}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-bold text-slate-700 mb-2">{t('contact.labels.message')}</label>
+                  <label htmlFor="message" className="mb-2 block text-sm font-bold text-slate-700">{t('contact.labels.message')}</label>
                   <textarea
                     id="message"
                     name="message"
@@ -324,13 +352,13 @@ export const Contact = () => {
                     value={formData.message}
                     onChange={handleChange}
                     rows={4}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none rounded-sm transition-colors resize-none"
+                    className="w-full resize-none rounded-sm border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition-colors focus:border-orange-500"
                     placeholder={t('contact.placeholders.message')}
                   ></textarea>
                 </div>
 
                 {status === 'error' && (
-                  <div className="p-4 bg-red-50 text-red-600 text-sm rounded-sm" role="alert">
+                  <div className="rounded-sm bg-red-50 p-4 text-sm text-red-600" role="alert">
                     {errorMessage}
                   </div>
                 )}
@@ -338,7 +366,7 @@ export const Contact = () => {
                 <button
                   type="submit"
                   disabled={status === 'loading'}
-                  className="w-full bg-orange-500 text-white font-bold py-4 rounded-sm hover:bg-orange-600 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                  className="flex w-full items-center justify-center gap-2 rounded-sm bg-orange-500 py-4 font-bold text-white transition-all hover:bg-orange-600 disabled:opacity-70"
                 >
                   {status === 'loading' ? (
                     <>

@@ -109,6 +109,28 @@ export const translations = {
       desc: "Complete el formulario a continuación y un experto en logística se pondrá en contacto con usted.",
       info_title: "Información de Contacto",
       form_title: "Envíenos un Mensaje",
+      info: {
+        address_heading: "Dirección",
+        phone_heading: "Teléfono",
+        email_heading: "Email",
+        address_value: "Tapachula, Chiapas, México",
+        phone_value: "+52 962 123 4567",
+        phone_hours: "Lunes a Viernes, 8:00 AM - 6:00 PM",
+        email_value: "info@oplpacificosur.com"
+      },
+      errors: {
+        name_min: "El nombre es obligatorio (mínimo 2 caracteres).",
+        email_invalid: "Ingrese un correo electrónico válido.",
+        message_min: "El mensaje debe tener al menos 10 caracteres.",
+        name_max: "El nombre no puede exceder 100 caracteres.",
+        message_max: "El mensaje no puede exceder 5000 caracteres.",
+        rate_limit: "Ha excedido el número máximo de envíos. Inténtelo más tarde.",
+        submit_failed: "Hubo un error al enviar el mensaje. Por favor intente nuevamente.",
+        missing_key: "Falta configurar la clave del formulario (VITE_WEB3FORMS_KEY)."
+      },
+      service_other: "Otro",
+      not_provided: "No proporcionado",
+      image_alt: "Equipo de atención al cliente",
       labels: {
         name: "Nombre Completo *",
         phone: "Teléfono",
@@ -121,6 +143,7 @@ export const translations = {
         name: "Juan Pérez",
         email: "juan@empresa.com",
         company: "Nombre de su empresa",
+        phone: "+52 ...",
         message: "Detalles sobre su carga..."
       },
       btn_send: "ENVIAR MENSAJE",
@@ -253,6 +276,28 @@ export const translations = {
       desc: "Complete the form below and a logistics expert will contact you shortly.",
       info_title: "Contact Information",
       form_title: "Send Us a Message",
+      info: {
+        address_heading: "Address",
+        phone_heading: "Phone",
+        email_heading: "Email",
+        address_value: "Tapachula, Chiapas, Mexico",
+        phone_value: "+52 962 123 4567",
+        phone_hours: "Monday to Friday, 8:00 AM - 6:00 PM",
+        email_value: "info@oplpacificosur.com"
+      },
+      errors: {
+        name_min: "Name is required (minimum 2 characters).",
+        email_invalid: "Please enter a valid email address.",
+        message_min: "Message must be at least 10 characters.",
+        name_max: "Name cannot exceed 100 characters.",
+        message_max: "Message cannot exceed 5000 characters.",
+        rate_limit: "You have exceeded the maximum number of submissions. Please try again later.",
+        submit_failed: "There was an error sending your message. Please try again.",
+        missing_key: "Form key is not configured (VITE_WEB3FORMS_KEY)."
+      },
+      service_other: "Other",
+      not_provided: "Not provided",
+      image_alt: "Customer service team",
       labels: {
         name: "Full Name *",
         phone: "Phone",
@@ -265,6 +310,7 @@ export const translations = {
         name: "John Doe",
         email: "john@company.com",
         company: "Your company name",
+        phone: "+52 ...",
         message: "Details about your cargo..."
       },
       btn_send: "SEND MESSAGE",
