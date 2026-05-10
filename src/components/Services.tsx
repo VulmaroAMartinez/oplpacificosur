@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Ship, Package, Globe2, ShieldCheck, Anchor, Sailboat } from 'lucide-react';
+import { Ship, Package, Globe2, Users, Anchor, Sailboat } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export const Services = () => {
@@ -8,14 +8,14 @@ export const Services = () => {
 
   const services = [
     {
+      icon: <Users size={40} />,
+      title: t('services.items.customs.title'),
+      description: t('services.items.customs.desc')
+    },
+    {
       icon: <Ship size={40} />,
       title: t('services.items.sea_freight.title'),
       description: t('services.items.sea_freight.desc')
-    },
-    {
-      icon: <Sailboat size={40} />,
-      title: t('services.items.sailboat_services.title'),
-      description: t('services.items.sailboat_services.desc')
     },
     {
       icon: <Package size={40} />,
@@ -23,19 +23,19 @@ export const Services = () => {
       description: t('services.items.cargo_services.desc')
     },
     {
-      icon: <ShieldCheck size={40} />,
-      title: t('services.items.customs.title'),
-      description: t('services.items.customs.desc')
+      icon: <Anchor size={40} />,
+      title: t('services.items.anchor_services.title'),
+      description: t('services.items.anchor_services.desc')
+    },
+    {
+      icon: <Sailboat size={40} />,
+      title: t('services.items.sailboat_services.title'),
+      description: t('services.items.sailboat_services.desc')
     },
     {
       icon: <Globe2 size={40} />,
       title: t('services.items.ship_services.title'),
       description: t('services.items.ship_services.desc')
-    },
-    {
-      icon: <Anchor size={40} />,
-      title: t('services.items.anchor_services.title'),
-      description: t('services.items.anchor_services.desc')
     }
   ];
 
