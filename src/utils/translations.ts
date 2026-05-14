@@ -23,15 +23,38 @@ export const translations = {
     services: {
       section_subtitle: "Nuestros Servicios",
       section_title: "Soluciones Logísticas Integrales",
-      section_desc: "Ofrecemos un abanico completo de servicios diseñados para optimizar su cadena de suministro y reducir costos operativos.",
-      items: {
-        sea_freight: { title: "Transporte Marítimo", desc: "Servicios FCL y LCL a los principales puertos del México con tarifas competitivas." },
-        sailboat_services: { title: "Servicios de lanchaje", desc: "Transporte seguro y especializado para el personal a borde o logística menor." },
-        cargo_services: { title: "Carga y descarga de mercancías", desc: "Carga y descarga de mercancías a los principales puertos de México" },
-        customs: { title: "Agencia Naviera", desc: "Gestión experta de trámites aduaneros." },
-        anchor_services: { title: "Amarre y desamarre de cabos", desc: "Aseguramos la inmovilización de barcos, permitiendo operaciones seguras y protegiéndolo de vientos y corrientes." },
-        ship_services: { title: "Avituallamiento de Buques", desc: "Atención a naves, avituallamiento y coordinación operativa." }
-      }
+      section_desc:
+        "Somos agencia naviera y operador logístico. Elija una línea de negocio para ver los servicios que ofrecemos en puerto y en tierra.",
+      line_agency: "Agencia Naviera",
+      line_logistics: "Operador Logístico",
+      titles: {
+        agency_ship_agency: "Agenciamiento de buques en puertos mexicanos y de Centroamérica.",
+        agency_provisions: "Avituallamiento de víveres a buques.",
+        agency_fcl_lcl: "Servicios de fletes marítimos FCL y LCL.",
+        agency_cy: "Depósito de contenedores CY.",
+        agency_cfs: "Depósito de carga consolidada CFS.",
+        agency_launch: "Lanchaje para embarques y desembarques de tripulación.",
+        agency_mooring: "Amarre y desamarre de cabos a todo tipo de buque.",
+        log_customs: "Servicios de agencia aduanal.",
+        log_load_unload: "Carga y descarga de mercancías.",
+        log_road: "Fletes terrestres.",
+        log_warehouse: "Servicios de almacenamiento y administración de inventarios.",
+        log_sanitary: "Gestión de permisos sanitarios y fitosanitarios.",
+      },
+      descs: {
+        agency_ship_agency: "Representación y coordinación portuaria en México y Centroamérica.",
+        agency_provisions: "Suministro de víveres y provisiones para tripulación y buque.",
+        agency_fcl_lcl: "Carga completa (FCL) y consolidada (LCL) con cobertura marítima.",
+        agency_cy: "Almacenamiento y manejo de contenedores bajo modalidad Carrier Yard.",
+        agency_cfs: "Depósito y manipulación de carga consolidada bajo modalidad CFS.",
+        agency_launch: "Transporte seguro de tripulación entre buque y muelle.",
+        agency_mooring: "Operaciones de amarre profesional para todo tipo de embarcación.",
+        log_customs: "Trámites y despacho aduanal ante autoridades competentes.",
+        log_load_unload: "Estiba y desestiba de mercancía general y especializada.",
+        log_road: "Transporte de carga por carretera a nivel nacional y regional.",
+        log_warehouse: "Bodega, control de existencias y administración de inventarios.",
+        log_sanitary: "Trámites COFEPRIS y permisos fitosanitarios para su mercancía.",
+      },
     },
     about: {
       section_subtitle: "Sobre Nosotros",
@@ -113,10 +136,11 @@ export const translations = {
         address_heading: "Dirección",
         phone_heading: "Teléfono",
         email_heading: "Email",
-        address_value: "Tapachula, Chiapas, México",
-        phone_value: "+52 962 123 4567",
+        address_value:
+          "Calle Parque Industrial MZ F Lote 34, Puerto Madero Centro, CP. 30830, Tapachula, Chiapas, México.",
+        phone_value: "+52 962 152 8543",
         phone_hours: "Lunes a Viernes, 8:00 AM - 6:00 PM",
-        email_value: "info@oplpacificosur.com"
+        email_value: "logistica@oplpacifico.com",
       },
       errors: {
         name_min: "El nombre es obligatorio (mínimo 2 caracteres).",
@@ -136,8 +160,9 @@ export const translations = {
         phone: "Teléfono",
         email: "Correo Electrónico *",
         company: "Empresa",
-        service: "Servicio de Interés",
-        message: "Mensaje *"
+        business_line: "Línea de negocio",
+        service: "Servicio de interés",
+        message: "Mensaje *",
       },
       placeholders: {
         name: "Juan Pérez",
@@ -190,15 +215,38 @@ export const translations = {
     services: {
       section_subtitle: "Our Services",
       section_title: "Integral Logistics Solutions",
-      section_desc: "We offer a complete range of services designed to optimize your supply chain and reduce operational costs.",
-      items: {
-        sea_freight: { title: "Sea Freight", desc: "FCL and LCL services to major world ports with competitive rates." },
-        sailboat_services: { title: "Sailboat Services", desc: "Secure and specialized transport for personnel on board or minor logistics." },
-        cargo_services: { title: "Cargo and Merchandise Loading and Unloading", desc: "Loading and unloading of merchandise to major ports in Mexico" },
-        customs: { title: "Customs Brokerage", desc: "Expert management of customs procedures." },
-        anchor_services: { title: "Anchor and Unanchor Services", desc: "We secure the immobilization of ships, allowing safe operations and protecting them from winds and currents." },
-        ship_services: { title: "Ship Supplying", desc: "Vessel attendance, chandling, and operational coordination." }
-      }
+      section_desc:
+        "We are a shipping agency and logistics operator. Choose a business line to see the services we offer ashore and at sea.",
+      line_agency: "Shipping Agency",
+      line_logistics: "Logistics Operator",
+      titles: {
+        agency_ship_agency: "Ship agency in Mexican and Central American ports.",
+        agency_provisions: "Ship chandlery and provisions supply.",
+        agency_fcl_lcl: "Maritime freight services — FCL and LCL.",
+        agency_cy: "Container yard (CY) storage.",
+        agency_cfs: "Consolidated cargo CFS storage and handling.",
+        agency_launch: "Launch boat services for crew embarkation and disembarkation.",
+        agency_mooring: "Mooring and unmooring lines for all vessel types.",
+        log_customs: "Customs brokerage services.",
+        log_load_unload: "Loading and unloading of goods.",
+        log_road: "Road freight and trucking.",
+        log_warehouse: "Warehousing and inventory management.",
+        log_sanitary: "Sanitary and phytosanitary permit management.",
+      },
+      descs: {
+        agency_ship_agency: "Port representation and coordination in Mexico and Central America.",
+        agency_provisions: "Provisions and stores for crew and vessel needs.",
+        agency_fcl_lcl: "Full-container (FCL) and less-than-container (LCL) ocean freight.",
+        agency_cy: "Container storage and handling under carrier yard terms.",
+        agency_cfs: "Consolidated cargo storage and handling under CFS terms.",
+        agency_launch: "Safe crew transfers between vessel and berth.",
+        agency_mooring: "Professional mooring operations for every vessel class.",
+        log_customs: "Customs clearance and filings with the relevant authorities.",
+        log_load_unload: "Stevedoring for general and specialized cargo.",
+        log_road: "Over-the-road transport nationally and regionally.",
+        log_warehouse: "Warehouse operations, stock control, and inventory administration.",
+        log_sanitary: "COFEPRIS and phytosanitary permits aligned with your cargo.",
+      },
     },
     about: {
       section_subtitle: "About Us",
@@ -280,10 +328,11 @@ export const translations = {
         address_heading: "Address",
         phone_heading: "Phone",
         email_heading: "Email",
-        address_value: "Tapachula, Chiapas, Mexico",
-        phone_value: "+52 962 123 4567",
+        address_value:
+          "Calle Parque Industrial MZ F Lote 34, Puerto Madero Centro, CP 30830, Tapachula, Chiapas, Mexico.",
+        phone_value: "+52 962 152 8543",
         phone_hours: "Monday to Friday, 8:00 AM - 6:00 PM",
-        email_value: "info@oplpacificosur.com"
+        email_value: "logistica@oplpacifico.com",
       },
       errors: {
         name_min: "Name is required (minimum 2 characters).",
@@ -303,8 +352,9 @@ export const translations = {
         phone: "Phone",
         email: "Email Address *",
         company: "Company",
-        service: "Service of Interest",
-        message: "Message *"
+        business_line: "Business line",
+        service: "Service of interest",
+        message: "Message *",
       },
       placeholders: {
         name: "John Doe",
