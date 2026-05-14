@@ -96,7 +96,7 @@ export const About = () => {
             <div className="absolute -bottom-10 -left-10 w-full h-full bg-slate-100 -z-10 rounded-sm" />
             
             <div className="absolute -bottom-8 -right-8 bg-orange-500 text-white p-6 rounded-sm shadow-lg z-20 max-w-xs hidden md:block">
-              <p className="text-4xl font-bold mb-1">15+</p>
+              <p className="text-4xl font-bold mb-1">4+</p>
               <p className="font-medium text-sm">{t('about.years_exp')}</p>
             </div>
           </div>
