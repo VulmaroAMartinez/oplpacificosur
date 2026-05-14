@@ -2,33 +2,22 @@ import React, { useState, useRef } from 'react';
 import { Mail, Phone, MapPin, Send, Loader2, CheckCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
+import {
+  type BusinessLine,
+  type ContactServiceId,
+  OTHER_SERVICE_ID,
+  getDefaultServiceForLine,
+  servicesForLine,
+} from '../data/serviceCatalog';
 
-// ─── Configuración ─────────────────────────────────────────────
-// Registrate gratis en https://web3forms.com para obtener tu access_key
-// Recibirás los emails directamente en tu correo registrado.
 const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_KEY as string;
 
-// ─── Anti-spam: Rate limiting por sesión ───────────────────────
 const MAX_SUBMISSIONS_PER_SESSION = 3;
 let sessionSubmissions = 0;
 
-// ─── Validación ────────────────────────────────────────────────
 function validateEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
-
-/** Identificadores alineados con `services.items.*` (mismo orden que en la web). */
-const CONTACT_SERVICE_IDS = [
-  'customs',
-  'sea_freight',
-  'cargo_services',
-  'anchor_services',
-  'sailboat_services',
-  'ship_services',
-  'other'
-] as const;
-
-type ContactServiceId = (typeof CONTACT_SERVICE_IDS)[number];
 
 function validateContactForm(
   data: { name: string; email: string; message: string },
@@ -48,9 +37,17 @@ function validateContactForm(
   return null;
 }
 
-function serviceInterestLabel(id: string, t: (key: string) => string): string {
-  if (id === 'other') return t('contact.service_other');
-  return t(`services.items.${id}.title`);
+function serviceInterestLabel(id: ContactServiceId, t: (key: string) => string): string {
+  if (id === OTHER_SERVICE_ID) return t('contact.service_other');
+  return t(`services.titles.${id}`);
+}
+
+function businessLineLabel(line: BusinessLine, t: (key: string) => string): string {
+  return line === 'agency' ? t('services.line_agency') : t('services.line_logistics');
+}
+
+function optionsForLine(line: BusinessLine): ContactServiceId[] {
+  return [...servicesForLine(line), OTHER_SERVICE_ID];
 }
 
 export const Contact = () => {
@@ -63,18 +60,30 @@ export const Contact = () => {
     email: '',
     company: '',
     phone: '',
-    service: 'customs' as ContactServiceId,
-    message: ''
+    businessLine: 'agency' as BusinessLine,
+    service: getDefaultServiceForLine('agency') as ContactServiceId,
+    message: '',
   });
+
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === 'service' ? (value as ContactServiceId) : value
-    }));
+    if (name === 'businessLine') {
+      const line = value as BusinessLine;
+      setFormData((prev) => ({
+        ...prev,
+        businessLine: line,
+        service: getDefaultServiceForLine(line),
+      }));
+      return;
+    }
+    if (name === 'service') {
+      setFormData((prev) => ({ ...prev, service: value as ContactServiceId }));
+      return;
+    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -88,22 +97,17 @@ export const Contact = () => {
       return;
     }
 
-    // ── Anti-spam check 1: Honeypot ──────────────────────────
     if (honeypotRef.current && honeypotRef.current.value) {
-      // Bot detected → finge éxito
       setStatus('success');
       return;
     }
 
-    // ── Anti-spam check 2: Tiempo mínimo ─────────────────────
     const elapsed = Date.now() - formStartTime.current;
     if (elapsed < 3000) {
-      // Llenó el form en menos de 3 segundos → bot
       setStatus('success');
       return;
     }
 
-    // ── Anti-spam check 3: Rate limiting ─────────────────────
     if (sessionSubmissions >= MAX_SUBMISSIONS_PER_SESSION) {
       setStatus('error');
       setErrorMessage(t('contact.errors.rate_limit'));
@@ -115,7 +119,7 @@ export const Contact = () => {
       email_invalid: t('contact.errors.email_invalid'),
       message_min: t('contact.errors.message_min'),
       name_max: t('contact.errors.name_max'),
-      message_max: t('contact.errors.message_max')
+      message_max: t('contact.errors.message_max'),
     });
     if (validationError) {
       setStatus('error');
@@ -124,7 +128,9 @@ export const Contact = () => {
     }
 
     try {
-      // ── Envío directo vía Web3Forms ────────────────────────
+      const lineLabel = businessLineLabel(formData.businessLine, t);
+      const serviceLabel = serviceInterestLabel(formData.service, t);
+
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -136,13 +142,12 @@ export const Contact = () => {
           email: formData.email,
           phone: formData.phone || t('contact.not_provided'),
           company: formData.company || t('contact.not_provided'),
-          service: serviceInterestLabel(formData.service, t),
+          business_line: lineLabel,
+          service: serviceLabel,
           message: formData.message,
-          // Anti-spam de Web3Forms
-          botcheck: '', // Web3Forms honeypot
-          // Metadata
-          _template: 'table', // Formato del email: tabla legible
-          _captcha: false,    // Desactivar captcha visual (usamos nuestro propio anti-spam)
+          botcheck: '',
+          _template: 'table',
+          _captcha: false,
         }),
       });
 
@@ -152,8 +157,13 @@ export const Contact = () => {
         sessionSubmissions++;
         setStatus('success');
         setFormData({
-          name: '', email: '', company: '', phone: '',
-          service: 'customs', message: ''
+          name: '',
+          email: '',
+          company: '',
+          phone: '',
+          businessLine: 'agency',
+          service: getDefaultServiceForLine('agency'),
+          message: '',
         });
       } else {
         throw new Error(result.message || t('contact.errors.submit_failed'));
@@ -172,6 +182,8 @@ export const Contact = () => {
     formStartTime.current = Date.now();
   };
 
+  const serviceOptions = optionsForLine(formData.businessLine);
+
   return (
     <div className="min-h-screen bg-white pb-20 pt-24">
       <div className="container mx-auto px-4 md:px-8">
@@ -187,8 +199,8 @@ export const Contact = () => {
               <h3 className="mb-6 text-2xl font-bold text-slate-900">{t('contact.info_title')}</h3>
               <ul className="space-y-6">
                 <li className="flex items-start gap-4">
-                  <div className="rounded-full bg-orange-100 p-3 text-orange-500">
-                    <MapPin size={24} />
+                  <div className="rounded-full bg-orange-100 p-3 text-orange-500 flex items-center justify-center">
+                    <MapPin size={24} strokeWidth={2} aria-hidden />
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-900">{t('contact.info.address_heading')}</h4>
@@ -196,22 +208,30 @@ export const Contact = () => {
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
-                  <div className="rounded-full bg-orange-100 p-3 text-orange-500">
-                    <Phone size={24} />
+                  <div className="rounded-full bg-orange-100 p-3 text-orange-500 flex items-center justify-center">
+                    <Phone size={24} strokeWidth={2} aria-hidden />
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-900">{t('contact.info.phone_heading')}</h4>
-                    <p className="text-slate-600">{t('contact.info.phone_value')}</p>
+                    <p className="text-slate-600">
+                      <a href="tel:+529621528543" className="hover:text-orange-600">
+                        {t('contact.info.phone_value')}
+                      </a>
+                    </p>
                     <p className="text-sm text-slate-500">{t('contact.info.phone_hours')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
-                  <div className="rounded-full bg-orange-100 p-3 text-orange-500">
-                    <Mail size={24} />
+                  <div className="rounded-full bg-orange-100 p-3 text-orange-500 flex items-center justify-center">
+                    <Mail size={24} strokeWidth={2} aria-hidden />
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-900">{t('contact.info.email_heading')}</h4>
-                    <p className="text-slate-600">{t('contact.info.email_value')}</p>
+                    <p className="text-slate-600">
+                      <a href="mailto:logistica@oplpacifico.com" className="hover:text-orange-600">
+                        {t('contact.info.email_value')}
+                      </a>
+                    </p>
                   </div>
                 </li>
               </ul>
@@ -253,7 +273,6 @@ export const Contact = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="relative space-y-6" noValidate>
-                {/* Honeypot: sin texto "Website" (evita confusión y lectores de pantalla); oculto de forma fiable */}
                 <input
                   type="text"
                   name="company_website_trap"
@@ -266,7 +285,9 @@ export const Contact = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-bold text-slate-700 mb-2">{t('contact.labels.name')}</label>
+                    <label htmlFor="name" className="block text-sm font-bold text-slate-700 mb-2">
+                      {t('contact.labels.name')}
+                    </label>
                     <input
                       type="text"
                       id="name"
@@ -281,7 +302,9 @@ export const Contact = () => {
                     />
                   </div>
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-bold text-slate-700 mb-2">{t('contact.labels.phone')}</label>
+                    <label htmlFor="phone" className="block text-sm font-bold text-slate-700 mb-2">
+                      {t('contact.labels.phone')}
+                    </label>
                     <input
                       type="tel"
                       id="phone"
@@ -296,7 +319,9 @@ export const Contact = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="email" className="block text-sm font-bold text-slate-700 mb-2">{t('contact.labels.email')}</label>
+                    <label htmlFor="email" className="block text-sm font-bold text-slate-700 mb-2">
+                      {t('contact.labels.email')}
+                    </label>
                     <input
                       type="email"
                       id="email"
@@ -310,7 +335,9 @@ export const Contact = () => {
                     />
                   </div>
                   <div>
-                    <label htmlFor="company" className="block text-sm font-bold text-slate-700 mb-2">{t('contact.labels.company')}</label>
+                    <label htmlFor="company" className="block text-sm font-bold text-slate-700 mb-2">
+                      {t('contact.labels.company')}
+                    </label>
                     <input
                       type="text"
                       id="company"
@@ -324,25 +351,46 @@ export const Contact = () => {
                   </div>
                 </div>
 
-                <div>
-                  <label htmlFor="service" className="block text-sm font-bold text-slate-700 mb-2">{t('contact.labels.service')}</label>
-                  <select
-                    id="service"
-                    name="service"
-                    value={formData.service}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none rounded-sm transition-colors"
-                  >
-                    {CONTACT_SERVICE_IDS.map((id) => (
-                      <option key={id} value={id}>
-                        {serviceInterestLabel(id, t)}
-                      </option>
-                    ))}
-                  </select>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="businessLine" className="block text-sm font-bold text-slate-700 mb-2">
+                      {t('contact.labels.business_line')}
+                    </label>
+                    <select
+                      id="businessLine"
+                      name="businessLine"
+                      value={formData.businessLine}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none rounded-sm transition-colors"
+                    >
+                      <option value="agency">{t('services.line_agency')}</option>
+                      <option value="logistics">{t('services.line_logistics')}</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="service" className="block text-sm font-bold text-slate-700 mb-2">
+                      {t('contact.labels.service')}
+                    </label>
+                    <select
+                      id="service"
+                      name="service"
+                      value={formData.service}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 focus:border-orange-500 outline-none rounded-sm transition-colors"
+                    >
+                      {serviceOptions.map((id) => (
+                        <option key={id} value={id}>
+                          {serviceInterestLabel(id, t)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="mb-2 block text-sm font-bold text-slate-700">{t('contact.labels.message')}</label>
+                  <label htmlFor="message" className="mb-2 block text-sm font-bold text-slate-700">
+                    {t('contact.labels.message')}
+                  </label>
                   <textarea
                     id="message"
                     name="message"
