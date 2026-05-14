@@ -36,7 +36,7 @@ export const Footer = () => {
                 <Linkedin size={18} />
               </a>
               <a
-                href="https://wa.me/529621234567"
+                href="https://wa.me/529621528543"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-orange-500 hover:text-white transition-all"
@@ -63,12 +63,22 @@ export const Footer = () => {
           <div>
             <h4 className="text-white font-bold text-lg mb-6">{t('footer.services_links')}</h4>
             <ul className="space-y-3">
-              <li><Link to={getLink('/')} className="hover:text-orange-500 transition-colors">{t('services.items.sea_freight.title')}</Link></li>
-              <li><Link to={getLink('/')} className="hover:text-orange-500 transition-colors">{t('services.items.sailboat_services.title')}</Link></li>
-              <li><Link to={getLink('/')} className="hover:text-orange-500 transition-colors">{t('services.items.cargo_services.title')}</Link></li>
-              <li><Link to={getLink('/')} className="hover:text-orange-500 transition-colors">{t('services.items.anchor_services.title')}</Link></li>
-              <li><Link to={getLink('/')} className="hover:text-orange-500 transition-colors">{t('services.items.ship_services.title')}</Link></li>
-              <li><Link to={getLink('/')} className="hover:text-orange-500 transition-colors">{t('services.items.customs.title')}</Link></li>
+              <li>
+                <Link
+                  to={{ pathname: getLink('/servicios'), search: '?line=agency' }}
+                  className="hover:text-orange-500 transition-colors"
+                >
+                  {t('services.line_agency')}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={{ pathname: getLink('/servicios'), search: '?line=logistics' }}
+                  className="hover:text-orange-500 transition-colors"
+                >
+                  {t('services.line_logistics')}
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -77,16 +87,20 @@ export const Footer = () => {
             <h4 className="text-white font-bold text-lg mb-6">{t('footer.contact_info')}</h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
-                <MapPin className="text-orange-500 mt-1 shrink-0" size={18} />
-                <span>Aquí va la dirección<br/>Tapachula, Chiapas, México</span>
+                <MapPin className="text-orange-500 mt-0.5 shrink-0" size={24} strokeWidth={2} aria-hidden />
+                <span>{t('contact.info.address_value')}</span>
               </li>
               <li className="flex items-center gap-3">
-                <Phone className="text-orange-500 shrink-0" size={18} />
-                <span>+52 962 123 4567</span>
+                <Phone className="text-orange-500 shrink-0" size={24} strokeWidth={2} aria-hidden />
+                <a href="tel:+529621528543" className="hover:text-orange-500 transition-colors">
+                  {t('contact.info.phone_value')}
+                </a>
               </li>
               <li className="flex items-center gap-3">
-                <Mail className="text-orange-500 shrink-0" size={18} />
-                <span>info@oplpacificosur.com</span>
+                <Mail className="text-orange-500 shrink-0" size={24} strokeWidth={2} aria-hidden />
+                <a href="mailto:logistica@oplpacifico.com" className="hover:text-orange-500 transition-colors">
+                  {t('contact.info.email_value')}
+                </a>
               </li>
             </ul>
           </div>
