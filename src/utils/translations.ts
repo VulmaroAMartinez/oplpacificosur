@@ -65,10 +65,8 @@ export const translations = {
       cta_team: "CONOZCA A NUESTRO EQUIPO",
       features: [
         "Cobertura Global",
-        "Rastreo en Tiempo Real",
         "Tarifas Competitivas",
         "Soporte 24/7",
-        "Certificación ISO 9001",
         "Seguro de Carga"
       ],
       history_title: "Nuestra Historia",
@@ -257,10 +255,8 @@ export const translations = {
       cta_team: "MEET OUR TEAM",
       features: [
         "Global Coverage",
-        "Real-Time Tracking",
         "Competitive Rates",
         "24/7 Support",
-        "ISO 9001 Certification",
         "Cargo Insurance"
       ],
       history_title: "Our Story",
