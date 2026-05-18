@@ -1,9 +1,19 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-// Estos valores se actualizarán automáticamente cuando el usuario conecte Supabase
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
-export const supabase = supabaseUrl && supabaseAnonKey 
-  ? createClient(supabaseUrl, supabaseAnonKey) 
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
+export const supabase: SupabaseClient | null = isSupabaseConfigured
+  ? createClient(supabaseUrl!, supabaseAnonKey!)
   : null;
+
+export function requireSupabase(): SupabaseClient {
+  if (!supabase) {
+    throw new Error(
+      'Supabase no está configurado. Añade VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en tu archivo .env'
+    );
+  }
+  return supabase;
+}

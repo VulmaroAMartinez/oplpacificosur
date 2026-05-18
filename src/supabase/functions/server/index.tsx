@@ -1,3 +1,7 @@
+/**
+ * @deprecated Edge Function legacy (KV store). El sitio usa Supabase Postgres directamente.
+ * Los endpoints /contact y /news ya no son consumidos por el frontend.
+ */
 import { Hono } from "npm:hono";
 import { cors } from "npm:hono/cors";
 import { logger } from "npm:hono/logger";
