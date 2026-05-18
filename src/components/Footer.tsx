@@ -24,7 +24,7 @@ export const Footer = () => {
             <div className="text-white text-2xl font-bold mb-6 flex items-center gap-2">
                 OPL Pacífico Sur
             </div>
-            <p className="mb-6 leading-relaxed">
+            <p className="mb-6 leading-relaxed text-justify">
               {t('footer.about_text')}
             </p>
             <div className="flex gap-4">

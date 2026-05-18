@@ -1,13 +1,13 @@
 export const translations = {
   es: {
     nav: {
-      home: "INICIO",
-      services: "SERVICIOS",
-      about: "NOSOTROS",
-      news: "NOTICIAS",
-      tracking: "RASTREO",
-      contact: "CONTÁCTANOS",
-      contact_short: "CONTACTO"
+      home: "Inicio",
+      services: "Servicios",
+      about: "Nosotros",
+      news: "Noticias",
+      tracking: "Rastreo",
+      contact: "Contáctanos",
+      contact_short: "Contacto"
     },
     hero: {
       subtitle: "Agente naviero y operador logístico",
@@ -191,13 +191,13 @@ export const translations = {
   },
   en: {
     nav: {
-      home: "HOME",
-      services: "SERVICES",
-      about: "ABOUT US",
-      news: "NEWS",
-      tracking: "TRACKING",
-      contact: "CONTACT US",
-      contact_short: "CONTACT"
+      home: "Home",
+      services: "Services",
+      about: "About Us",
+      news: "News",
+      tracking: "Tracking",
+      contact: "Contact Us",
+      contact_short: "Contact"
     },
     hero: {
       subtitle: "Shipping agent and logistics operator",
