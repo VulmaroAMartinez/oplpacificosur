@@ -1,13 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
-import { ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 const TYPING_SPEED = 55;
 const PAUSE_BETWEEN = 280;
 
+const SLIDES = [
+  {
+    id: 1,
+    image: 'https://images.unsplash.com/photo-1621862681400-a2a7321dc1c2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb250YWluZXIlMjBzaGlwJTIwY2FyZ28lMjBvY2VhbnxlbnwxfHx8fDE3NzAyMjc3MDh8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    alt: 'Barco de contenedores en el océano'
+  },
+  {
+    id: 2,
+    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYXJnbyUyMHBvcnQlMjBhaXJpYWx8ZW58MXx8fHwxNzcwMjI3NzA4fDA&ixlib=rb-4.1.0&q=80&w=1080',
+    alt: 'Vista aérea del puerto de carga'
+  },
+  {
+    id: 3,
+    image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXJlaG91c2UlMjBsb2dpc3RpY3N8ZW58MXx8fHwxNzcwMjI3NzA4fDA&ixlib=rb-4.1.0&q=80&w=1080',
+    alt: 'Almacén logístico moderno'
+  }
+];
+
 export const Hero = () => {
-  const { t, getLink, language } = useLanguage();
+  const { t, language } = useLanguage();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [direction, setDirection] = useState(0);
 
   const titleStart = t('hero.title_start') as string;
   const titleHighlight = t('hero.title_highlight') as string;
@@ -16,6 +36,17 @@ export const Hero = () => {
   const [displayedHighlight, setDisplayedHighlight] = useState('');
   const [phase, setPhase] = useState<'start' | 'pause' | 'highlight' | 'done'>('start');
   const [cursorVisible, setCursorVisible] = useState(true);
+
+  const getLink = (path: string) => `${path}?lang=${language}`;
+
+  // Slideshow interval
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setDirection(1);
+      setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Reiniciar typewriter al cambiar idioma
   useEffect(() => {
@@ -68,24 +99,87 @@ export const Hero = () => {
     />
   );
 
-  return (
-    <section id="inicio" className="relative h-screen min-h-[600px] flex items-center">
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src="https://images.unsplash.com/photo-1621862681400-a2a7321dc1c2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb250YWluZXIlMjBzaGlwJTIwY2FyZ28lMjBvY2VhbnxlbnwxfHx8fDE3NzAyMjc3MDh8MA&ixlib=rb-4.1.0&q=80&w=1080"
-          alt="Container Ship"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-transparent" />
-      </div>
+  const goToSlide = (index: number) => {
+    setDirection(index > currentSlide ? 1 : -1);
+    setCurrentSlide(index);
+  };
 
+  const nextSlide = () => {
+    setDirection(1);
+    setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+  };
+
+  const prevSlide = () => {
+    setDirection(-1);
+    setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+  };
+
+  const variants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 1000 : -1000,
+      opacity: 0
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction: number) => ({
+      zIndex: 0,
+      x: direction < 0 ? 1000 : -1000,
+      opacity: 0
+    })
+  };
+
+  return (
+    <section id="inicio" className="relative h-screen min-h-[600px] flex items-center overflow-hidden">
+      {/* Background Image Carousel */}
+      <AnimatePresence initial={false} custom={direction}>
+        <motion.div
+          key={currentSlide}
+          custom={direction}
+          variants={variants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{
+            x: { type: "spring", stiffness: 300, damping: 30 },
+            opacity: { duration: 0.2 }
+          }}
+          className="absolute inset-0 z-0"
+        >
+          <img
+            src={SLIDES[currentSlide].image}
+            alt={SLIDES[currentSlide].alt}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-transparent" />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Navigation Arrows */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-3 rounded-full transition-all hidden md:block"
+        aria-label="Previous slide"
+      >
+        <ChevronLeft size={28} />
+      </button>
+      <button
+        onClick={nextSlide}
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-3 rounded-full transition-all hidden md:block"
+        aria-label="Next slide"
+      >
+        <ChevronRight size={28} />
+      </button>
+
+      {/* Content */}
       <div className="container mx-auto px-4 md:px-8 relative z-10 pt-20">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
-          className="max-w-2xl text-white"
+          className="max-w-2xl text-white md:ml-16 lg:ml-20"
         >
           <div className="flex items-center gap-2 mb-4">
             <div className="h-1 w-12 bg-orange-500" />
@@ -93,7 +187,6 @@ export const Hero = () => {
               {t('hero.subtitle')}
             </span>
           </div>
-
           <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6">
             <span>
               {displayedStart}
@@ -105,7 +198,6 @@ export const Hero = () => {
               <Cursor active={phase === 'highlight' || phase === 'done'} />
             </span>
           </h1>
-
           <p className="text-lg md:text-xl text-slate-300 mb-8 max-w-lg leading-relaxed">
             {t('hero.description')}
           </p>
@@ -125,6 +217,22 @@ export const Hero = () => {
             </a>
           </div>
         </motion.div>
+      </div>
+
+      {/* Dots Navigation */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-3">
+        {SLIDES.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className={`h-2 rounded-full transition-all ${
+              index === currentSlide
+                ? 'w-12 bg-orange-500'
+                : 'w-2 bg-white/50 hover:bg-white/80'
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
       </div>
     </section>
   );

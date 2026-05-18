@@ -104,10 +104,10 @@ export const About = () => {
           <div className="lg:w-1/2">
             <span className="text-orange-500 font-bold tracking-widest uppercase text-sm">{t('about.section_subtitle')}</span>
             <h2 className="text-4xl font-bold text-slate-900 mt-2 mb-6">{t('about.title')}</h2>
-            <p className="text-slate-600 text-lg mb-6 leading-relaxed">
+            <p className="text-slate-600 text-lg mb-6 leading-relaxed text-justify">
               {t('about.p1')}
             </p>
-            <p className="text-slate-600 mb-8">
+            <p className="text-slate-600 mb-8 text-justify leading-relaxed">
               {t('about.p2')}
             </p>
 
@@ -163,7 +163,7 @@ export const About = () => {
               </div>
               <h3 className="text-3xl font-bold">{t('about.vision_title')}</h3>
             </div>
-            <p className="text-white/95 leading-relaxed text-lg">
+            <p className="text-white/95 leading-relaxed text-lg text-justify">
               {t('about.vision_text')}
             </p>
           </div>
@@ -176,7 +176,7 @@ export const About = () => {
               </div>
               <h3 className="text-3xl font-bold">{t('about.mission_title')}</h3>
             </div>
-            <p className="text-white/95 leading-relaxed text-lg">
+            <p className="text-white/95 leading-relaxed text-lg text-justify">
               {t('about.mission_text')}
             </p>
           </div>
