@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Mail, Phone, MapPin, Send, Loader2, CheckCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
+import { useSiteImages } from '../context/SiteImagesContext';
 import {
   type BusinessLine,
   type ContactServiceId,
@@ -52,6 +53,7 @@ function optionsForLine(line: BusinessLine): ContactServiceId[] {
 
 export const Contact = () => {
   const { t } = useLanguage();
+  const { getImageUrl, getAltText } = useSiteImages();
   const honeypotRef = useRef<HTMLInputElement>(null);
   const formStartTime = useRef<number>(Date.now());
 
@@ -239,8 +241,8 @@ export const Contact = () => {
 
             <div className="relative h-64 overflow-hidden rounded-sm shadow-md">
               <img
-                src="https://images.unsplash.com/photo-1618577520246-bad40975f401?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb3Jwb3JhdGUlMjBtZWV0aW5nJTIwc2hpcHBpbmclMjBpbmR1c3RyeXxlbnwxfHx8fDE3NzAyMjc3MDh8MA&ixlib=rb-4.1.0&q=80&w=1080"
-                alt={t('contact.image_alt')}
+                src={getImageUrl('contact')}
+                alt={getAltText('contact') || t('contact.image_alt')}
                 className="h-full w-full object-cover"
                 loading="lazy"
               />

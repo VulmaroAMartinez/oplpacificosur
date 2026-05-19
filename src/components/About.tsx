@@ -1,9 +1,11 @@
 import React from 'react';
 import { CheckCircle2, Target, Eye, Award, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useSiteImages } from '../context/SiteImagesContext';
 
 export const About = () => {
   const { t, getLink } = useLanguage();
+  const { getImageUrl, getAltText } = useSiteImages();
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const [slidesToShow, setSlidesToShow] = React.useState(3);
   const [isTransitioning, setIsTransitioning] = React.useState(true);
@@ -87,8 +89,8 @@ export const About = () => {
           <div className="lg:w-1/2 relative">
             <div className="relative z-10 rounded-sm overflow-hidden shadow-2xl">
               <img
-                src="https://images.unsplash.com/photo-1619070284836-e850273d69ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsb2dpc3RpY3MlMjB3YXJlaG91c2UlMjBtb2Rlcm58ZW58MXx8fHwxNzcwMTkwNzI1fDA&ixlib=rb-4.1.0&q=80&w=1080"
-                alt="Warehouse Operations"
+                src={getImageUrl('about')}
+                alt={getAltText('about')}
                 className="w-full h-auto object-cover"
               />
             </div>

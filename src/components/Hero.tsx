@@ -1,31 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useSiteImages } from '../context/SiteImagesContext';
 
 const TYPING_SPEED = 55;
 const PAUSE_BETWEEN = 280;
 
-const SLIDES = [
-  {
-    id: 1,
-    image: 'https://images.unsplash.com/photo-1621862681400-a2a7321dc1c2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb250YWluZXIlMjBzaGlwJTIwY2FyZ28lMjBvY2VhbnxlbnwxfHx8fDE3NzAyMjc3MDh8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    alt: 'Barco de contenedores en el océano'
-  },
-  {
-    id: 2,
-    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYXJnbyUyMHBvcnQlMjBhaXJpYWx8ZW58MXx8fHwxNzcwMjI3NzA4fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    alt: 'Vista aérea del puerto de carga'
-  },
-  {
-    id: 3,
-    image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXJlaG91c2UlMjBsb2dpc3RpY3N8ZW58MXx8fHwxNzcwMjI3NzA4fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    alt: 'Almacén logístico moderno'
-  }
-];
+const HERO_SLOT_IDS = ['hero_1', 'hero_2', 'hero_3'] as const;
 
 export const Hero = () => {
   const { t, language } = useLanguage();
+  const { getImageUrl, getAltText } = useSiteImages();
+
+  const slides = useMemo(
+    () =>
+      HERO_SLOT_IDS.map((id, index) => ({
+        id: index + 1,
+        image: getImageUrl(id),
+        alt: getAltText(id) ?? `Slide ${index + 1}`,
+      })),
+    [getImageUrl, getAltText]
+  );
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(0);
 
@@ -43,10 +39,10 @@ export const Hero = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setDirection(1);
-      setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 6000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
   // Reiniciar typewriter al cambiar idioma
   useEffect(() => {
@@ -106,12 +102,12 @@ export const Hero = () => {
 
   const nextSlide = () => {
     setDirection(1);
-    setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
 
   const prevSlide = () => {
     setDirection(-1);
-    setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
   const variants = {
@@ -149,8 +145,8 @@ export const Hero = () => {
           className="absolute inset-0 z-0"
         >
           <img
-            src={SLIDES[currentSlide].image}
-            alt={SLIDES[currentSlide].alt}
+            src={slides[currentSlide].image}
+            alt={slides[currentSlide].alt}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-transparent" />
@@ -221,7 +217,7 @@ export const Hero = () => {
 
       {/* Dots Navigation */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-3">
-        {SLIDES.map((_, index) => (
+        {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
