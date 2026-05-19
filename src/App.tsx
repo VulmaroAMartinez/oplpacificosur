@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { LanguageProvider } from './context/LanguageContext';
+import { SiteImagesProvider } from './context/SiteImagesContext';
 import { SeoTags } from './components/SeoTags';
 import { AdminGuard } from './components/AdminGuard';
 
@@ -13,6 +14,7 @@ import { Contact } from './pages/Contact';
 import { Admin } from './pages/Admin';
 import { AdminLogin } from './pages/AdminLogin';
 import { AdminNewsForm } from './pages/AdminNewsForm';
+import { AdminImages } from './pages/AdminImages';
 
 // Reusing existing components wrapped for pages
 import { Services } from './components/Services';
@@ -43,6 +45,7 @@ const AppRoutes = () => (
       <Route index element={<Admin />} />
       <Route path="noticias/nueva" element={<AdminNewsForm />} />
       <Route path="noticias/:id/editar" element={<AdminNewsForm />} />
+      <Route path="imagenes" element={<AdminImages />} />
     </Route>
 
     <Route path="*" element={<Navigate to="/" replace />} />
@@ -72,8 +75,10 @@ const App = () => {
   return (
     <Router>
       <LanguageProvider>
-        <SeoTags />
-        <AppShell />
+        <SiteImagesProvider children={undefined}>
+          <SeoTags />
+          <AppShell />
+        </SiteImagesProvider>
       </LanguageProvider>
     </Router>
   );
