@@ -12,7 +12,9 @@ interface SiteImagesContextValue {
 
 const SiteImagesContext = createContext<SiteImagesContextValue | undefined>(undefined);
 
-export const SiteImagesProvider = ({ children }: { children: React.ReactNode }) => {
+type SiteImagesProviderProps = React.PropsWithChildren<Record<string, never>>;
+
+export const SiteImagesProvider = ({ children }: SiteImagesProviderProps) => {
   const [images, setImages] = useState<SiteImagesMap>(DEFAULT_SITE_IMAGES);
   const [isLoading, setIsLoading] = useState(true);
 

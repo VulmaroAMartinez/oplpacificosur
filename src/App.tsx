@@ -75,7 +75,7 @@ const App = () => {
   return (
     <Router>
       <LanguageProvider>
-        <SiteImagesProvider children={undefined}>
+        <SiteImagesProvider>
           <SeoTags />
           <AppShell />
         </SiteImagesProvider>
