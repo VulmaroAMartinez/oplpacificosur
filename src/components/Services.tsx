@@ -166,6 +166,52 @@ export const Services = ({ variant = 'full' }: ServicesProps) => {
 
   const count = visibleIds.length;
 
+  const remainderThreeCol = count % 3;
+
+  const mainGridCount = remainderThreeCol === 0 ? count : count - remainderThreeCol;
+
+
+
+  const renderServiceCard = (id: CatalogServiceId, index: number, className = '') => (
+
+    <motion.div
+
+      key={`${activeLine}-${id}`}
+
+      initial={{ opacity: 0, y: 16 }}
+
+      animate={{ opacity: 1, y: 0 }}
+
+      transition={{ delay: index * 0.06 }}
+
+      className={[
+
+        'bg-slate-900 p-6 md:p-8 rounded-sm shadow-sm hover:shadow-xl transition-all border-b-4 border-transparent hover:border-orange-500 group',
+
+        className,
+
+      ]
+
+        .filter(Boolean)
+
+        .join(' ')}
+
+    >
+
+      <div className="text-orange-500 mb-5">{ICON_BY_SERVICE[id]}</div>
+
+      <h3 className="text-lg md:text-xl font-bold text-white mb-3 leading-snug">
+
+        {t(`services.titles.${id}`)}
+
+      </h3>
+
+      <p className="text-white leading-relaxed text-sm">{t(`services.descs.${id}`)}</p>
+
+    </motion.div>
+
+  );
+
 
 
   return (
@@ -346,53 +392,49 @@ export const Services = ({ variant = 'full' }: ServicesProps) => {
 
             {visibleIds.map((id, index) => {
 
-              const isLast = index === count - 1;
+              if (remainderThreeCol === 2 && index >= mainGridCount) {
 
-              const loneInTwoCol = isLast && count % 2 === 1;
+                if (index === mainGridCount) {
 
-              const loneInThreeCol = isLast && count % 3 === 1;
+                  return (
 
+                    <React.Fragment key={`${activeLine}-tail-pair`}>
 
+                      {visibleIds.slice(mainGridCount).map((tailId, i) =>
 
-              const baseCard =
+                        renderServiceCard(tailId, mainGridCount + i, 'xl:hidden')
 
-                'bg-slate-900 p-6 md:p-8 rounded-sm shadow-sm hover:shadow-xl transition-all border-b-4 border-transparent hover:border-orange-500 group';
+                      )}
 
+                      <div className="hidden xl:flex col-span-3 w-full justify-center items-stretch gap-6 md:gap-8">
 
+                        {visibleIds.slice(mainGridCount).map((tailId, i) =>
 
-              const body = (
+                          renderServiceCard(
 
-                <>
+                            tailId,
 
-                  <div className="text-orange-500 mb-5">{ICON_BY_SERVICE[id]}</div>
+                            mainGridCount + i,
 
-                  <h3 className="text-lg md:text-xl font-bold text-white mb-3 leading-snug">
+                            'w-full xl:w-[calc((100%-2rem)/3)] xl:max-w-none'
 
-                    {t(`services.titles.${id}`)}
+                          )
 
-                  </h3>
+                        )}
 
-                  <p className="text-white leading-relaxed text-sm">{t(`services.descs.${id}`)}</p>
+                      </div>
 
-                </>
+                    </React.Fragment>
 
-              );
+                  );
 
+                }
 
+                return null;
 
-              const motionProps = {
+              }
 
-                initial: { opacity: 0, y: 16 } as const,
-
-                animate: { opacity: 1, y: 0 } as const,
-
-                transition: { delay: index * 0.06 },
-
-              };
-
-
-
-              if (loneInTwoCol) {
+              if (remainderThreeCol === 1 && index === count - 1) {
 
                 return (
 
@@ -400,35 +442,19 @@ export const Services = ({ variant = 'full' }: ServicesProps) => {
 
                     key={`${activeLine}-${id}`}
 
-                    className={[
-
-                      'col-span-1 flex w-full justify-center sm:col-span-2',
-
-                      loneInThreeCol ? 'xl:col-span-3' : 'xl:contents',
-
-                    ].join(' ')}
+                    className="col-span-1 flex w-full justify-center sm:col-span-2 xl:col-span-3"
 
                   >
 
-                    <motion.div
+                    {renderServiceCard(
 
-                      {...motionProps}
+                      id,
 
-                      className={[
+                      index,
 
-                        baseCard,
+                      'w-full max-w-2xl sm:max-w-[calc((100%-1.5rem)/2)] xl:max-w-2xl'
 
-                        'w-full max-w-2xl sm:max-w-[calc((100%-1.5rem)/2)] md:max-w-[calc((100%-2rem)/2)] xl:w-full',
-
-                        loneInThreeCol ? 'xl:max-w-2xl' : 'xl:max-w-none',
-
-                      ].join(' ')}
-
-                    >
-
-                      {body}
-
-                    </motion.div>
+                    )}
 
                   </div>
 
@@ -436,17 +462,9 @@ export const Services = ({ variant = 'full' }: ServicesProps) => {
 
               }
 
+              if (index >= mainGridCount) return null;
 
-
-              return (
-
-                <motion.div key={`${activeLine}-${id}`} {...motionProps} className={baseCard}>
-
-                  {body}
-
-                </motion.div>
-
-              );
+              return renderServiceCard(id, index);
 
             })}
 
