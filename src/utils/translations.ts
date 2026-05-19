@@ -132,12 +132,14 @@ export const translations = {
       form_title: "Envíenos un Mensaje",
       info: {
         address_heading: "Dirección",
-        phone_heading: "Teléfono",
+        phone_heading: "Teléfono(s)",
         email_heading: "Email",
         address_value:
           "Calle Parque Industrial MZ F Lote 34, Puerto Madero Centro, CP. 30830, Tapachula, Chiapas, México.",
         phone_value: "+52 962 152 8543",
+        phone_value_secondary: "+52 962 620 4235",
         phone_hours: "Lunes a Viernes, 8:00 AM - 6:00 PM",
+        phone_hours_saturday: "Sábados de 8:00 AM - 1:00 PM",
         email_value: "logistica@oplpacifico.com",
       },
       errors: {
@@ -322,12 +324,14 @@ export const translations = {
       form_title: "Send Us a Message",
       info: {
         address_heading: "Address",
-        phone_heading: "Phone",
+        phone_heading: "Phone(s)",
         email_heading: "Email",
         address_value:
           "Calle Parque Industrial MZ F Lote 34, Puerto Madero Centro, CP 30830, Tapachula, Chiapas, Mexico.",
         phone_value: "+52 962 152 8543",
+        phone_value_secondary: "+52 962 620 4235",
         phone_hours: "Monday to Friday, 8:00 AM - 6:00 PM",
+        phone_hours_saturday: "Saturdays, 8:00 AM - 1:00 PM",
         email_value: "logistica@oplpacifico.com",
       },
       errors: {

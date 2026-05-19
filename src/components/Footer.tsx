@@ -90,11 +90,19 @@ export const Footer = () => {
                 <MapPin className="text-orange-500 mt-0.5 shrink-0" size={24} strokeWidth={2} aria-hidden />
                 <span>{t('contact.info.address_value')}</span>
               </li>
-              <li className="flex items-center gap-3">
-                <Phone className="text-orange-500 shrink-0" size={24} strokeWidth={2} aria-hidden />
-                <a href="tel:+529621528543" className="hover:text-orange-500 transition-colors">
-                  {t('contact.info.phone_value')}
-                </a>
+              <li className="flex items-start gap-3">
+                <Phone className="text-orange-500 shrink-0 mt-0.5" size={24} strokeWidth={2} aria-hidden />
+                <div>
+                  <p className="text-white font-semibold mb-1">{t('contact.info.phone_heading')}</p>
+                  <a href="tel:+529621528543" className="block hover:text-orange-500 transition-colors">
+                    {t('contact.info.phone_value')}
+                  </a>
+                  <a href="tel:+529626204235" className="block hover:text-orange-500 transition-colors">
+                    {t('contact.info.phone_value_secondary')}
+                  </a>
+                  <p className="text-xs text-slate-500 mt-1">{t('contact.info.phone_hours')}</p>
+                  <p className="text-xs text-slate-500">{t('contact.info.phone_hours_saturday')}</p>
+                </div>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="text-orange-500 shrink-0" size={24} strokeWidth={2} aria-hidden />

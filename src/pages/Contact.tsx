@@ -220,7 +220,13 @@ export const Contact = () => {
                         {t('contact.info.phone_value')}
                       </a>
                     </p>
+                    <p className="text-slate-600">
+                      <a href="tel:+529626204235" className="hover:text-orange-600">
+                        {t('contact.info.phone_value_secondary')}
+                      </a>
+                    </p>
                     <p className="text-sm text-slate-500">{t('contact.info.phone_hours')}</p>
+                    <p className="text-sm text-slate-500">{t('contact.info.phone_hours_saturday')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
