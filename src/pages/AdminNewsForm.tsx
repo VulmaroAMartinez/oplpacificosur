@@ -203,7 +203,7 @@ export const AdminNewsForm = () => {
             <p className="text-xs text-slate-500 mb-2">
               {isEdit
                 ? 'Sube una imagen nueva para reemplazar la actual, o deja la existente.'
-                : 'La imagen se guardará en Supabase Storage (bucket news-images).'}
+                : 'Sube una imagen de portada para la noticia.'}
             </p>
 
             {imagePreview && (
