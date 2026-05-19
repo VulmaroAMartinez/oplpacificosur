@@ -55,7 +55,21 @@ El panel admin está en:
 
 Solo usuarios con sesión activa pueden crear, editar o eliminar noticias.
 
-## 5. Storage para imágenes de noticias
+## 5. Imágenes editables del sitio (Hero, Nosotros, Contacto)
+
+En el **SQL Editor**, ejecuta también:
+
+[`supabase/migrations/003_site_images.sql`](../supabase/migrations/003_site_images.sql)
+
+Eso crea:
+
+- Tabla `public.site_images` con los 5 espacios: `hero_1`, `hero_2`, `hero_3`, `about`, `contact`
+- Bucket público `site-images` (máx. 5 MB, JPG/PNG/WebP/GIF)
+- Políticas RLS: lectura pública, escritura solo autenticados
+
+En el panel admin: `/admin/imagenes` — sube y reemplaza cada imagen por espacio.
+
+## 6. Storage para imágenes de noticias
 
 El admin **solo sube imágenes** al bucket `news-images` de Supabase (no se usan URLs externas en el formulario).
 
@@ -70,7 +84,7 @@ Eso crea el bucket público `news-images` (máx. 5 MB, JPG/PNG/WebP/GIF) y las p
 
 Alternativa manual en el dashboard: **Storage** → **New bucket** → `news-images` → Public, y añade las mismas políticas RLS.
 
-## 6. Despliegue (Vercel / Netlify)
+## 7. Despliegue (Vercel / Netlify)
 
 Añade las mismas variables en el panel de tu hosting:
 
@@ -82,11 +96,12 @@ Añade las mismas variables en el panel de tu hosting:
 
 Vuelve a desplegar tras guardar las variables.
 
-## 7. Verificación
+## 8. Verificación
 
 - [ ] `.env` con URL y anon key del **proyecto correcto**
 - [ ] SQL `001_news.sql` ejecutado sin errores
-- [ ] SQL `002_storage_news_images.sql` ejecutado (subida de imágenes)
+- [ ] SQL `002_storage_news_images.sql` ejecutado (subida de imágenes de noticias)
+- [ ] SQL `003_site_images.sql` ejecutado (imágenes Hero / About / Contacto)
 - [ ] Usuario admin creado en Authentication
 - [ ] `/admin/login` — inicio de sesión OK
 - [ ] `/admin` — crear noticia de prueba
@@ -94,7 +109,9 @@ Vuelve a desplegar tras guardar las variables.
 - [ ] `/noticias/tu-slug` — vista de detalle
 - [ ] Formulario `/contacto` sigue enviando con Web3Forms
 
-## 8. Datos de demostración
+- [ ] `/admin/imagenes` — reemplazar una imagen de prueba
+
+## 9. Datos de demostración
 
 En `/admin`, si no hay noticias, usa el botón **Cargar Demo** para insertar 3 artículos de ejemplo vía Supabase.
 
