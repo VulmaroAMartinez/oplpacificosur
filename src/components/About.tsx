@@ -116,7 +116,7 @@ export const About = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {t('about.features').map((item: string, index: number) => (
                 <div key={index} className="flex items-center gap-3">
-                  <CheckCircle2 className="text-orange-500 flex-shrink-0" size={20} />
+                  <CheckCircle2 className="text-orange-500 shrink-0" size={20} />
                   <span className="text-slate-800 font-medium">{item}</span>
                 </div>
               ))}
@@ -158,7 +158,7 @@ export const About = () => {
       <div className="container mx-auto px-4 md:px-8 mt-32">
         <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {/* Visión */}
-          <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-sm p-10 text-white shadow-xl">
+          <div className="bg-linear-to-br from-orange-500 to-orange-600 rounded-sm p-10 text-white shadow-xl">
             <div className="flex items-center gap-4 mb-6">
               <div className="bg-white/20 p-3 rounded-sm">
                 <Eye className="w-8 h-8" />
@@ -171,7 +171,7 @@ export const About = () => {
           </div>
 
           {/* Misión */}
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-sm p-10 text-white shadow-xl">
+          <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-sm p-10 text-white shadow-xl">
             <div className="flex items-center gap-4 mb-6">
               <div className="bg-orange-500/20 p-3 rounded-sm">
                 <Target className="w-8 h-8 text-orange-400" />
@@ -221,12 +221,12 @@ export const About = () => {
               {infiniteValues.map((value: { title: string; desc: string }, index: number) => (
                 <div 
                   key={`${index}-${value.title}`} 
-                  className="flex-shrink-0 px-2 sm:px-3 lg:px-4"
+                  className="shrink-0 px-2 sm:px-3 lg:px-4"
                   style={{ width: `${100 / slidesToShow}%` }}
                 >
                   <div className="bg-white border-2 border-slate-200 rounded-sm p-6 sm:p-8 lg:p-10 hover:border-orange-500 hover:shadow-xl transition-all duration-300 group min-h-[320px] sm:min-h-[340px] lg:min-h-[360px] flex flex-col">
                     <div className="flex items-start gap-3 mb-4">
-                      <div className="bg-orange-100 p-2 rounded-sm group-hover:bg-orange-500 transition-colors flex-shrink-0">
+                      <div className="bg-orange-100 p-2 rounded-sm group-hover:bg-orange-500 transition-colors shrink-0">
                         <Award className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500 group-hover:text-white transition-colors" />
                       </div>
                       <h4 className="text-base sm:text-xl lg:text-2xl font-bold text-slate-900 leading-tight">{value.title}</h4>

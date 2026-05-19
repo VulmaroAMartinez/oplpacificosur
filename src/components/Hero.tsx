@@ -149,7 +149,7 @@ export const Hero = () => {
             alt={slides[currentSlide].alt}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-r from-slate-900/90 via-slate-900/60 to-transparent" />
         </motion.div>
       </AnimatePresence>
 
@@ -189,7 +189,7 @@ export const Hero = () => {
               <Cursor active={phase === 'start' || phase === 'pause'} />
             </span>
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-orange-600">
               {displayedHighlight}
               <Cursor active={phase === 'highlight' || phase === 'done'} />
             </span>

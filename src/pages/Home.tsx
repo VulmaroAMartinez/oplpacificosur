@@ -119,7 +119,7 @@ export const Home = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-to-br from-slate-800 to-slate-900 text-center">
+      <section className="py-20 bg-linear-to-br from-slate-800 to-slate-900 text-center">
         <div className="container mx-auto px-4 md:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">{t('cta.title')}</h2>
           <p className="text-lg text-slate-300 mb-10 max-w-2xl mx-auto">{t('cta.desc')}</p>

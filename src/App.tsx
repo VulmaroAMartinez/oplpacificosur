@@ -63,7 +63,7 @@ const AppShell = () => {
   return (
     <div className="font-sans text-slate-900 bg-white flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-grow">
+      <main className="grow">
         <AppRoutes />
       </main>
       <Footer />
