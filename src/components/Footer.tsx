@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Linkedin } from 'lucide-react';
+import { Mail, Phone, MapPin, Linkedin, InstagramIcon } from 'lucide-react';
 
 function WhatsAppIcon({ size = 18 }: { size?: number }) {
   return (
@@ -29,20 +29,29 @@ export const Footer = () => {
             </p>
             <div className="flex gap-4">
               <a
-                href="#"
+                href="https://www.linkedin.com/company/opl-pacifico-sur/"
                 className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-orange-500 hover:text-white transition-all"
                 aria-label="LinkedIn"
               >
                 <Linkedin size={18} />
               </a>
               <a
-                href="https://wa.me/529621528543"
+                href="https://wa.me/529621528543?text=Hola, me interesa conocer más sobre sus servicios."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-orange-500 hover:text-white transition-all"
                 aria-label="WhatsApp"
               >
                 <WhatsAppIcon size={18} />
+              </a>
+              <a
+                href="https://www.instagram.com/oplpacificosur"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-orange-500 hover:text-white transition-all"
+                aria-label="Instagram"
+              >
+                <InstagramIcon size={18} />
               </a>
             </div>
           </div>

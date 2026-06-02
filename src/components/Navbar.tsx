@@ -3,7 +3,7 @@ import { Menu, X, Anchor, Globe } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-const logo = new URL('../assets/oplblanco.png', import.meta.url).href;
+const logo = new URL('../assets/oplcompleto.png', import.meta.url).href;
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
