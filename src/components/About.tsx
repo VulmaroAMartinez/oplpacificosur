@@ -1,18 +1,77 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { CheckCircle2, Target, Eye, Award, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useSiteImages } from '../context/SiteImagesContext';
+import { Boletines } from './Bulletin';
+import type { SiteImageId } from '../types/siteImages';
+
+const ABOUT_IMAGE_IDS: SiteImageId[] = ['about_1', 'about_2', 'about_3'];
+
+const imageVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 400 : -400,
+    opacity: 0,
+  }),
+  center: {
+    zIndex: 1,
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: number) => ({
+    zIndex: 0,
+    x: direction < 0 ? 400 : -400,
+    opacity: 0,
+  }),
+};
 
 export const About = () => {
   const { t, getLink } = useLanguage();
   const { getImageUrl, getAltText } = useSiteImages();
+
+  const imageSlides = useMemo(
+    () =>
+      ABOUT_IMAGE_IDS.map((id, index) => ({
+        id,
+        image: getImageUrl(id),
+        alt: getAltText(id) ?? `Nosotros ${index + 1}`,
+      })),
+    [getImageUrl, getAltText]
+  );
+
+  const [imageSlide, setImageSlide] = useState(0);
+  const [imageDirection, setImageDirection] = useState(0);
+
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const [slidesToShow, setSlidesToShow] = React.useState(3);
   const [isTransitioning, setIsTransitioning] = React.useState(true);
   const sliderRef = React.useRef<HTMLDivElement>(null);
 
   const values = t('about.values');
-  
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setImageDirection(1);
+      setImageSlide((prev) => (prev + 1) % imageSlides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [imageSlides.length]);
+
+  const goToImageSlide = (index: number) => {
+    setImageDirection(index > imageSlide ? 1 : -1);
+    setImageSlide(index);
+  };
+
+  const nextImageSlide = () => {
+    setImageDirection(1);
+    setImageSlide((prev) => (prev + 1) % imageSlides.length);
+  };
+
+  const prevImageSlide = () => {
+    setImageDirection(-1);
+    setImageSlide((prev) => (prev - 1 + imageSlides.length) % imageSlides.length);
+  };
+
   // Crear array infinito triplicando los valores
   const infiniteValues = [...values, ...values, ...values];
   const startIndex = values.length; // Comenzar en el segundo set
@@ -87,16 +146,65 @@ export const About = () => {
       <div className="container mx-auto px-4 md:px-8">
         <div className="flex flex-col lg:flex-row items-center gap-16">
           <div className="lg:w-1/2 relative">
-            <div className="relative z-10 rounded-sm overflow-hidden shadow-2xl">
-              <img
-                src={getImageUrl('about')}
-                alt={getAltText('about')}
-                className="w-full h-auto object-cover"
-              />
+            <div className="relative z-10 rounded-sm overflow-hidden shadow-2xl aspect-4/3">
+              <AnimatePresence initial={false} custom={imageDirection}>
+                <motion.div
+                  key={imageSlide}
+                  custom={imageDirection}
+                  variants={imageVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{
+                    x: { type: 'spring', stiffness: 300, damping: 30 },
+                    opacity: { duration: 0.2 },
+                  }}
+                  className="absolute inset-0"
+                >
+                  <img
+                    src={imageSlides[imageSlide].image}
+                    alt={imageSlides[imageSlide].alt}
+                    className="w-full h-full object-cover"
+                  />
+                </motion.div>
+              </AnimatePresence>
+
+              <button
+                type="button"
+                onClick={prevImageSlide}
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-slate-800 p-2 rounded-full transition-all shadow-md"
+                aria-label="Diapositiva anterior"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                type="button"
+                onClick={nextImageSlide}
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-slate-800 p-2 rounded-full transition-all shadow-md"
+                aria-label="Diapositiva siguiente"
+              >
+                <ChevronRight size={20} />
+              </button>
+
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+                {imageSlides.map((_, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => goToImageSlide(index)}
+                    className={`h-2 rounded-full transition-all ${
+                      index === imageSlide
+                        ? 'w-8 bg-orange-500'
+                        : 'w-2 bg-white/70 hover:bg-white'
+                    }`}
+                    aria-label={`Ir a diapositiva ${index + 1}`}
+                  />
+                ))}
+              </div>
             </div>
             {/* Decorative background element */}
             <div className="absolute -bottom-10 -left-10 w-full h-full bg-slate-100 -z-10 rounded-sm" />
-            
+
             <div className="absolute -bottom-8 -right-8 bg-orange-500 text-white p-6 rounded-sm shadow-lg z-20 max-w-xs hidden md:block">
               <p className="text-4xl font-bold mb-1">4+</p>
               <p className="font-medium text-sm">{t('about.years_exp')}</p>
@@ -121,7 +229,7 @@ export const About = () => {
                 </div>
               ))}
             </div>
-            
+
             <div className="mt-10">
               <a href={getLink('/contacto')} className="text-slate-900 font-bold border-b-2 border-orange-500 pb-1 hover:text-orange-500 transition-colors inline-block">
                 {t('about.cta_team')}
@@ -130,6 +238,9 @@ export const About = () => {
           </div>
         </div>
       </div>
+      <div className="container mx-auto px-4 md:px-8 mt-32">
+        <Boletines />
+      </div>
 
       {/* Sección Nuestra Historia */}
       <div className="container mx-auto px-4 md:px-8 mt-32">
@@ -137,12 +248,12 @@ export const About = () => {
           <span className="text-orange-500 font-bold tracking-widest uppercase text-sm">{t('about.history_title')}</span>
           <div className="w-20 h-1 bg-orange-500 mx-auto mt-4 mb-8"></div>
         </div>
-        
+
         <div className="max-w-4xl mx-auto">
           <p className="text-slate-800 text-lg leading-relaxed mb-6 text-center italic">
             {t('about.history_intro')}
           </p>
-          
+
           <div className="bg-slate-50 rounded-sm p-8 md:p-12 shadow-lg">
             <p className="text-slate-700 leading-relaxed mb-6">
               {t('about.history_p1')}
@@ -201,7 +312,7 @@ export const About = () => {
           >
             <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
           </button>
-          
+
           <button
             onClick={handleNext}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white border-2 border-orange-500 rounded-full p-2 sm:p-3 hover:bg-orange-500 hover:text-white transition-all shadow-lg"
@@ -212,15 +323,15 @@ export const About = () => {
 
           {/* Carrusel */}
           <div className="overflow-hidden mx-8 sm:mx-12 lg:mx-16">
-            <div 
+            <div
               ref={sliderRef}
               className={`flex ${isTransitioning ? 'transition-transform duration-500 ease-in-out' : ''}`}
               style={{ transform: `translateX(-${(currentIndex * 100) / slidesToShow}%)` }}
               onTransitionEnd={handleTransitionEnd}
             >
               {infiniteValues.map((value: { title: string; desc: string }, index: number) => (
-                <div 
-                  key={`${index}-${value.title}`} 
+                <div
+                  key={`${index}-${value.title}`}
                   className="shrink-0 px-2 sm:px-3 lg:px-4"
                   style={{ width: `${100 / slidesToShow}%` }}
                 >
@@ -246,9 +357,8 @@ export const About = () => {
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`h-2 sm:h-3 rounded-full transition-all ${
-                  getCurrentDotIndex() === index ? 'bg-orange-500 w-6 sm:w-8' : 'bg-slate-300 hover:bg-orange-300 w-2 sm:w-3'
-                }`}
+                className={`h-2 sm:h-3 rounded-full transition-all ${getCurrentDotIndex() === index ? 'bg-orange-500 w-6 sm:w-8' : 'bg-slate-300 hover:bg-orange-300 w-2 sm:w-3'
+                  }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}

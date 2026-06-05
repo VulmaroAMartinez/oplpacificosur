@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Hero } from '../components/Hero';
 import { Services } from '../components/Services';
 import { About } from '../components/About';
+import { Boletines } from '../components/Bulletin';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
@@ -64,6 +65,10 @@ export const Home = () => {
 
       <About />
 
+      {/* Boletines Informativos section */}
+      
+
+      {/* Latest News section */}
       <section className="py-20 bg-slate-50">
         <div className="container mx-auto px-4 md:px-8">
           <div className="flex justify-between items-end mb-12">
@@ -119,6 +124,7 @@ export const Home = () => {
         </div>
       </section>
 
+      {/* Final CTA */}
       <section className="py-20 bg-linear-to-br from-slate-800 to-slate-900 text-center">
         <div className="container mx-auto px-4 md:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">{t('cta.title')}</h2>

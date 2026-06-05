@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Trash2, Plus, Newspaper, RefreshCw, LogOut, Pencil, ImageIcon } from 'lucide-react';
+import { Trash2, Plus, Newspaper, RefreshCw, LogOut, Pencil, ImageIcon, BookOpen } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import {
   deleteNews,
@@ -60,6 +60,7 @@ export const Admin = () => {
   return (
     <div className="pt-24 pb-20 bg-slate-100 min-h-screen">
       <div className="container mx-auto px-4 md:px-8">
+        {/* Header */}
         <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
           <h1 className="text-3xl font-bold text-slate-900">Panel de Administración</h1>
           <div className="flex items-center gap-2">
@@ -79,26 +80,52 @@ export const Admin = () => {
           </div>
         </div>
 
-        <Link
-          to="/admin/imagenes"
-          className="block mb-8 bg-white rounded-sm shadow-md overflow-hidden border border-slate-100 hover:border-orange-300 hover:shadow-lg transition-all group"
-        >
-          <div className="p-6 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-sm bg-orange-100 text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-colors">
-                <ImageIcon size={28} />
+        {/* Quick-access cards grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {/* Images card */}
+          <Link
+            to="/admin/imagenes"
+            className="bg-white rounded-sm shadow-md overflow-hidden border border-slate-100 hover:border-orange-300 hover:shadow-lg transition-all group"
+          >
+            <div className="p-6 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-sm bg-orange-100 text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                  <ImageIcon size={28} />
+                </div>
+                <div>
+                  <h2 className="font-bold text-slate-900 text-lg">Imágenes del sitio</h2>
+                  <p className="text-sm text-slate-500 mt-1">
+                    Carrusel de inicio, Nosotros y Contacto
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="font-bold text-slate-900 text-lg">Imágenes del sitio</h2>
-                <p className="text-sm text-slate-500 mt-1">
-                  Carrusel de inicio, Nosotros y Contacto
-                </p>
-              </div>
+              <span className="text-orange-500 font-bold text-sm shrink-0">Gestionar →</span>
             </div>
-            <span className="text-orange-500 font-bold text-sm shrink-0">Gestionar →</span>
-          </div>
-        </Link>
+          </Link>
 
+          {/* Boletines card */}
+          <Link
+            to="/admin/boletines"
+            className="bg-white rounded-sm shadow-md overflow-hidden border border-slate-100 hover:border-orange-300 hover:shadow-lg transition-all group"
+          >
+            <div className="p-6 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-sm bg-orange-100 text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                  <BookOpen size={28} />
+                </div>
+                <div>
+                  <h2 className="font-bold text-slate-900 text-lg">Boletines Informativos</h2>
+                  <p className="text-sm text-slate-500 mt-1">
+                    Crear, editar y eliminar boletines
+                  </p>
+                </div>
+              </div>
+              <span className="text-orange-500 font-bold text-sm shrink-0">Gestionar →</span>
+            </div>
+          </Link>
+        </div>
+
+        {/* News management table */}
         <div className="bg-white rounded-sm shadow-md overflow-hidden min-h-[500px]">
           <div className="flex border-b border-slate-200 px-6 py-4 items-center justify-between">
             <h2 className="font-bold flex items-center gap-2 text-slate-900">

@@ -59,15 +59,15 @@ export const translations = {
     about: {
       section_subtitle: "Sobre Nosotros",
       title: "Excelencia en Cada Envío",
-      p1: "En OPL Pacífico Sur, no solo nos enfocamos en planear y coordinar cada buque, cada carga y cada operación logística; también nos comprometemos en impulsar cada negocio. Somos un agente naviero y operador logístico comprometido con la excelencia, la transparencia y la seguridad.",
-      p2: "Contamos un equipo local experto y una red global de socios estratégicos. Garantizamos que cada operación portuaria y logística se ejecute en perfectas condiciones.",
+      p1: "En OPL Pacífico Sur, no solo movemos carga; impulsamos negocios. Somos un agente de carga y operador logístico comprometido con la eficiencia, la transparencia y la seguridad.",
+      p2: "Con una red global de socios y un equipo local experto, garantizamos que su mercancía llegue a tiempo y en perfectas condiciones.",
       years_exp: "Años de experiencia moviendo el comercio global.",
       cta_team: "CONOZCA A NUESTRO EQUIPO",
       features: [
         "Cobertura Global",
         "Tarifas Competitivas",
         "Soporte 24/7",
-        "Servicios especializados a la medida"
+        "Seguro de Carga"
       ],
       history_title: "Nuestra Historia",
       history_intro: "En OPL Pacífico sur, somos más que un agente naviero: somos el motor que impulsa el movimiento del comercio, la eficiencia y la confianza en cada operación logística. Nacimos en el corazón del Pacífico mexicano, con la visión de ser el aliado estratégico que simplifica lo complejo, que anticipa antes de que ocurra, y que entrega más que cargas: resultados.",
@@ -123,6 +123,19 @@ export const translations = {
       read_more: "LEER MÁS",
       read_article: "LEER ARTÍCULO",
       view_all: "VER TODAS"
+    },
+    boletines: {
+      section_subtitle: "Boletines Informativos",
+      section_title: "Información Clave para tu Negocio",
+      section_desc:
+        "Mantente al día con análisis profundos del sector marítimo, tendencias globales y estrategias logísticas que impulsan la competitividad.",
+      view_all: "VER TODOS LOS BOLETINES",
+      read_more: "LEER MÁS",
+      page_title: "Boletines Informativos",
+      page_desc:
+        "Explora todos nuestros boletines con análisis del sector marítimo, tendencias globales y estrategias logísticas.",
+      footer_msg:
+        "Estamos constantemente publicando nuevos boletines. Visita esta página regularmente para mantenerte informado sobre las últimas tendencias del sector marítimo y logístico.",
     },
     contact: {
       section_subtitle: "Contáctanos",
@@ -206,7 +219,7 @@ export const translations = {
       title_start: "Connect the world.",
       title_highlight: "Connect opportunities.",
       description: "In OPL Pacífico Sur we believe that the sea not only connects ports, but also opportunities.",
-        cta_quote: "GET A QUOTE",
+      cta_quote: "GET A QUOTE",
       cta_services: "OUR SERVICES",
       tracking_title: "Quick Tracking",
       tracking_desc: "Enter your B/L or container number to check status.",
@@ -251,15 +264,15 @@ export const translations = {
     about: {
       section_subtitle: "About Us",
       title: "Excellence in Every Shipment",
-      p1: "At OPL Pacífico Sur, we not only focus on planning and coordinating each ship, each load, and each logistics operation; we also commit to driving each business. We are a shipping agency and logistics operator committed to excellence, transparency, and security.",
-      p2: "We have an expert local team and a global strategic network of partners. We guarantee that each port operation and logistics operation is executed in perfect conditions.",
+      p1: "At OPL Pacífico Sur, we don't just move cargo; we drive business. We are a freight forwarder and logistics operator committed to efficiency, transparency, and security.",
+      p2: "With a global network of partners and an expert local team, we guarantee your merchandise arrives on time and in perfect condition.",
       years_exp: "Years of experience moving global trade.",
       cta_team: "MEET OUR TEAM",
       features: [
         "Global Coverage",
         "Competitive Rates",
         "24/7 Support",
-        "Specialized services tailored to your needs"
+        "Cargo Insurance"
       ],
       history_title: "Our Story",
       history_intro: "At OPL Pacífico Sur, we are more than a shipping agent: we are the engine that drives trade movement, efficiency, and trust in every logistics operation. We were born in the heart of the Mexican Pacific, with the vision of being the strategic ally that simplifies the complex, anticipates before it happens, and delivers more than cargo: results.",
@@ -315,6 +328,19 @@ export const translations = {
       read_more: "READ MORE",
       read_article: "READ ARTICLE",
       view_all: "VIEW ALL"
+    },
+    boletines: {
+      section_subtitle: "Informational Bulletins",
+      section_title: "Key Information for Your Business",
+      section_desc:
+        "Stay up to date with in-depth analysis of the maritime sector, global trends, and logistics strategies that drive competitiveness.",
+      view_all: "VIEW ALL BULLETINS",
+      read_more: "READ MORE",
+      page_title: "Informational Bulletins",
+      page_desc:
+        "Explore all our bulletins with maritime sector analysis, global trends, and logistics strategies.",
+      footer_msg:
+        "We are constantly publishing new bulletins. Visit this page regularly to stay informed about the latest trends in the maritime and logistics sector.",
     },
     contact: {
       section_subtitle: "Contact Us",

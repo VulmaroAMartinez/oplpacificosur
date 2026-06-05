@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useSiteImages } from '../context/SiteImagesContext';
-
+//add more images to carusel 
 const TYPING_SPEED = 55;
 const PAUSE_BETWEEN = 280;
 
-const HERO_SLOT_IDS = ['hero_1', 'hero_2', 'hero_3'] as const;
+const HERO_SLOT_IDS = ['hero_1', 'hero_2', 'hero_3', 'hero_4', 'hero_5', 'hero_6', 'hero_7'] as const;
 
 export const Hero = () => {
   const { t, language } = useLanguage();
