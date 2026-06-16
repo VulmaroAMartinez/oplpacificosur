@@ -47,26 +47,6 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return detectLanguageFromPath(window.location.pathname);
   });
 
-  // Redirigir según idioma del navegador solo en la primera visita de la sesión
-  useEffect(() => {
-    const alreadyDetected = sessionStorage.getItem('lang-detected');
-    if (alreadyDetected) return;
-
-    sessionStorage.setItem('lang-detected', '1');
-
-    // Solo redirigir si el usuario está en la raíz (no en una ruta directa)
-    const isRootPath = location.pathname === '/' || location.pathname === '';
-    if (!isRootPath) return;
-
-    const browserLang = navigator.language || (navigator as any).userLanguage || '';
-    const prefersEnglish = browserLang.toLowerCase().startsWith('en');
-
-    if (prefersEnglish) {
-      setLanguageState('en');
-      navigate('/en/', { replace: true });
-    }
-  }, []);
-
   // Sincronizar idioma cuando cambia la URL
   useEffect(() => {
     const detected = detectLanguageFromPath(location.pathname);

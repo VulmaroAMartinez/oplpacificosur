@@ -61,10 +61,10 @@ export const Footer = () => {
             <h4 className="text-white font-bold text-lg mb-6">{t('footer.quick_links')}</h4>
             <ul className="space-y-3">
               <li><Link to={getLink('/')} className="hover:text-orange-500 transition-colors">{t('nav.home')}</Link></li>
-              <li><Link to={getLink('/')} className="hover:text-orange-500 transition-colors">{t('nav.services')}</Link></li>
-              <li><Link to={getLink('/')} className="hover:text-orange-500 transition-colors">{t('nav.about')}</Link></li>
-              {/* <li><Link to={getLink('/rastreo')} className="hover:text-orange-500 transition-colors">{t('nav.tracking')}</Link></li> */}
-              <li><Link to={getLink('/')} className="hover:text-orange-500 transition-colors">{t('nav.news')}</Link></li>
+              <li><Link to={getLink('/servicios')} className="hover:text-orange-500 transition-colors">{t('nav.services')}</Link></li>
+              <li><Link to={getLink('/nosotros')} className="hover:text-orange-500 transition-colors">{t('nav.about')}</Link></li>
+              <li><Link to={getLink('/noticias')} className="hover:text-orange-500 transition-colors">{t('nav.news')}</Link></li>
+              <li><Link to={getLink('/contacto')} className="hover:text-orange-500 transition-colors">{t('nav.contact_short')}</Link></li>
             </ul>
           </div>
 

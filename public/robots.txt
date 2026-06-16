@@ -1,0 +1,16 @@
+# robots.txt — OPL Pacífico Sur
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/login
+Disallow: /admin/noticias/
+Disallow: /admin/imagenes
+Disallow: /admin/boletines/
+
+# Evitar indexación de URLs con parámetros de idioma residuales
+Disallow: /*?lang=
+
+# Sitemap
+Sitemap: https://oplpacifico.com/sitemap.xml

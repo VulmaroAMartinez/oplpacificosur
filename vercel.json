@@ -1,8 +1,32 @@
 {
-    "rewrites": [
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
         {
-            "source": "/(.*)",
-            "destination": "/index.html"
+          "type": "host",
+          "value": "www.oplpacifico.com"
         }
-    ]
+      ],
+      "destination": "https://oplpacifico.com/:path*",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/((?!robots\\.txt|sitemap\\.xml|sitemap-news\\.xml|favicon\\.ico).*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/admin/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
+  ]
 }

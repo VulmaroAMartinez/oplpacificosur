@@ -8,6 +8,20 @@ export const AdminGuard = () => {
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
+    let metaRobots = document.querySelector('meta[name="robots"]') as HTMLMetaElement;
+    if (!metaRobots) {
+      metaRobots = document.createElement('meta');
+      metaRobots.name = 'robots';
+      document.head.appendChild(metaRobots);
+    }
+    metaRobots.content = 'noindex, nofollow';
+
+    return () => {
+      if (metaRobots) metaRobots.content = 'index, follow';
+    };
+  }, []);
+
+  useEffect(() => {
     if (!isSupabaseConfigured || !supabase) {
       setChecking(false);
       return;

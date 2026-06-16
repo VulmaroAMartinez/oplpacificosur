@@ -10,7 +10,7 @@ const PAUSE_BETWEEN = 280;
 const HERO_SLOT_IDS = ['hero_1', 'hero_2', 'hero_3', 'hero_4', 'hero_5', 'hero_6', 'hero_7'] as const;
 
 export const Hero = () => {
-  const { t, language } = useLanguage();
+  const { t, language, getLink } = useLanguage();
   const { getImageUrl, getAltText } = useSiteImages();
 
   const slides = useMemo(
@@ -32,8 +32,6 @@ export const Hero = () => {
   const [displayedHighlight, setDisplayedHighlight] = useState('');
   const [phase, setPhase] = useState<'start' | 'pause' | 'highlight' | 'done'>('start');
   const [cursorVisible, setCursorVisible] = useState(true);
-
-  const getLink = (path: string) => `${path}?lang=${language}`;
 
   // Slideshow interval
   useEffect(() => {

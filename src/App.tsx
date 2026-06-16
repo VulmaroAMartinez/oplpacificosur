@@ -22,9 +22,39 @@ import { AdminBoletinesForm } from './pages/AdminBulletinForm';
 // Reusing existing components wrapped for pages
 import { Services } from './components/Services';
 import { About } from './components/About';
+import { NotFound } from './pages/NotFound';
+import { Breadcrumb } from './components/Breadcrumb';
 
-const ServicesPage = () => <div className="pt-20"><Services /></div>;
-const AboutPage = () => <div className="pt-20"><About /></div>;
+const ServicesPage = () => (
+  <div className="pt-20">
+    <Breadcrumb />
+    <Services />
+  </div>
+);
+const AboutPage = () => (
+  <div className="pt-20">
+    <Breadcrumb />
+    <About />
+  </div>
+);
+const NewsPage = () => (
+  <div className="pt-20">
+    <Breadcrumb />
+    <News />
+  </div>
+);
+const BoletinesPageWrapper = () => (
+  <div className="pt-20">
+    <Breadcrumb />
+    <BoletinesPage />
+  </div>
+);
+const ContactPage = () => (
+  <div className="pt-20">
+    <Breadcrumb />
+    <Contact />
+  </div>
+);
 
 const AppRoutes = () => (
   <Routes>
@@ -32,20 +62,20 @@ const AppRoutes = () => (
     <Route path="/" element={<Home />} />
     <Route path="/servicios" element={<ServicesPage />} />
     <Route path="/nosotros" element={<AboutPage />} />
-    <Route path="/noticias" element={<News />} />
-    <Route path="/noticias/:slug" element={<News />} />
-    <Route path="/boletines" element={<BoletinesPage />} />
-    <Route path="/contacto" element={<Contact />} />
+    <Route path="/noticias" element={<NewsPage />} />
+    <Route path="/noticias/:slug" element={<NewsPage />} />
+    <Route path="/boletines" element={<BoletinesPageWrapper />} />
+    <Route path="/contacto" element={<ContactPage />} />
 
     {/* English routes */}
     <Route path="/en" element={<Home />} />
     <Route path="/en/" element={<Home />} />
     <Route path="/en/servicios" element={<ServicesPage />} />
     <Route path="/en/nosotros" element={<AboutPage />} />
-    <Route path="/en/noticias" element={<News />} />
-    <Route path="/en/noticias/:slug" element={<News />} />
-    <Route path="/en/boletines" element={<BoletinesPage />} />
-    <Route path="/en/contacto" element={<Contact />} />
+    <Route path="/en/noticias" element={<NewsPage />} />
+    <Route path="/en/noticias/:slug" element={<NewsPage />} />
+    <Route path="/en/boletines" element={<BoletinesPageWrapper />} />
+    <Route path="/en/contacto" element={<ContactPage />} />
 
     {/* Admin routes */}
     <Route path="/admin/login" element={<AdminLogin />} />
@@ -59,7 +89,7 @@ const AppRoutes = () => (
       <Route path="boletines/:id/editar" element={<AdminBoletinesForm />} />
     </Route>
 
-    <Route path="*" element={<Navigate to="/" replace />} />
+    <Route path="*" element={<NotFound />} />
   </Routes>
 );
 
