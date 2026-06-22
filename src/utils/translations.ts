@@ -78,6 +78,7 @@ export const translations = {
       mission_title: "Misión",
       mission_text: "Brindar servicios integrales de agencia naviera y logística portuaria, asegurando operaciones eficientes, seguras y confiables que impulsen el comercio marítimo y generen valor sostenible para nuestros clientes.",
       values_title: "Valores",
+      gallery_title: "Galería",
       values: [
         {
           title: "Excelencia Operativa",
@@ -283,6 +284,7 @@ export const translations = {
       mission_title: "Mission",
       mission_text: "To provide comprehensive shipping agency and port logistics services, ensuring efficient, safe, and reliable operations that drive maritime trade and generate sustainable value for our clients.",
       values_title: "Values",
+      gallery_title: "Gallery",
       values: [
         {
           title: "Operational Excellence",

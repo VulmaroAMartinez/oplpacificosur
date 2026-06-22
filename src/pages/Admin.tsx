@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Trash2, Plus, Newspaper, RefreshCw, LogOut, Pencil, ImageIcon, BookOpen } from 'lucide-react';
+import { Trash2, Plus, Newspaper, RefreshCw, LogOut, Pencil, ImageIcon, BookOpen, Images } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import {
   deleteNews,
@@ -81,7 +81,7 @@ export const Admin = () => {
         </div>
 
         {/* Quick-access cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {/* Images card */}
           <Link
             to="/admin/imagenes"
@@ -96,6 +96,27 @@ export const Admin = () => {
                   <h2 className="font-bold text-slate-900 text-lg">Imágenes del sitio</h2>
                   <p className="text-sm text-slate-500 mt-1">
                     Carrusel de inicio, Nosotros y Contacto
+                  </p>
+                </div>
+              </div>
+              <span className="text-orange-500 font-bold text-sm shrink-0">Gestionar →</span>
+            </div>
+          </Link>
+
+          {/* Gallery card */}
+          <Link
+            to="/admin/galeria"
+            className="bg-white rounded-sm shadow-md overflow-hidden border border-slate-100 hover:border-orange-300 hover:shadow-lg transition-all group"
+          >
+            <div className="p-6 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-sm bg-orange-100 text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                  <Images size={28} />
+                </div>
+                <div>
+                  <h2 className="font-bold text-slate-900 text-lg">Galería</h2>
+                  <p className="text-sm text-slate-500 mt-1">
+                    Subir y eliminar fotos de la sección Nosotros
                   </p>
                 </div>
               </div>

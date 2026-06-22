@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CheckCircle2, Target, Eye, Award, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useSiteImages } from '../context/SiteImagesContext';
-import { Boletines } from './Bulletin';
+import { getGalleryImages, isSupabaseConfigured } from '../services/galleryService';
 import type { SiteImageId } from '../types/siteImages';
+import type { GalleryImage } from '../types/gallery';
 
 const ABOUT_IMAGE_IDS: SiteImageId[] = ['about_1', 'about_2', 'about_3'];
 
@@ -30,7 +31,7 @@ interface AboutProps {
 }
 
 export const About = ({ showHistory = true }: AboutProps) => {
-  const { t, getLink } = useLanguage();
+  const { t, getLink, language } = useLanguage();
   const { getImageUrl, getAltText } = useSiteImages();
 
   const imageSlides = useMemo(
@@ -51,7 +52,83 @@ export const About = ({ showHistory = true }: AboutProps) => {
   const [isTransitioning, setIsTransitioning] = React.useState(true);
   const sliderRef = React.useRef<HTMLDivElement>(null);
 
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const [gallerySlidesToShow, setGallerySlidesToShow] = useState(6);
+  const [galleryTransitioning, setGalleryTransitioning] = useState(true);
+  const gallerySliderRef = useRef<HTMLDivElement>(null);
+
   const values = t('about.values');
+  const galleryAltPrefix = language === 'en' ? 'Gallery' : 'Galería';
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    getGalleryImages()
+      .then(setGalleryImages)
+      .catch((err) => console.error('Error loading gallery:', err));
+  }, []);
+
+  useEffect(() => {
+    const handleGalleryResize = () => {
+      const width = window.innerWidth;
+      if (width < 768) setGallerySlidesToShow(2);
+      else if (width < 1024) setGallerySlidesToShow(4);
+      else setGallerySlidesToShow(6);
+    };
+
+    handleGalleryResize();
+    window.addEventListener('resize', handleGalleryResize);
+    return () => window.removeEventListener('resize', handleGalleryResize);
+  }, []);
+
+  const canScrollGallery = galleryImages.length > gallerySlidesToShow;
+  const galleryEffectiveSlides = Math.min(gallerySlidesToShow, galleryImages.length);
+  const infiniteGallery = useMemo(
+    () =>
+      canScrollGallery
+        ? [...galleryImages, ...galleryImages, ...galleryImages]
+        : galleryImages,
+    [canScrollGallery, galleryImages]
+  );
+  const galleryStartIndex = galleryImages.length;
+
+  useEffect(() => {
+    if (canScrollGallery) {
+      setGalleryIndex(galleryStartIndex);
+    } else {
+      setGalleryIndex(0);
+    }
+  }, [canScrollGallery, galleryStartIndex, galleryImages.length]);
+
+  const handleGalleryNext = useCallback(() => {
+    if (!canScrollGallery) return;
+    setGalleryTransitioning(true);
+    setGalleryIndex((prev) => prev + 1);
+  }, [canScrollGallery]);
+
+  const handleGalleryPrev = useCallback(() => {
+    if (!canScrollGallery) return;
+    setGalleryTransitioning(true);
+    setGalleryIndex((prev) => prev - 1);
+  }, [canScrollGallery]);
+
+  const handleGalleryTransitionEnd = () => {
+    if (!canScrollGallery) return;
+    if (galleryIndex >= galleryImages.length * 2) {
+      setGalleryTransitioning(false);
+      setGalleryIndex(galleryImages.length);
+    }
+    if (galleryIndex < galleryImages.length) {
+      setGalleryTransitioning(false);
+      setGalleryIndex(galleryImages.length * 2 - 1);
+    }
+  };
+
+  useEffect(() => {
+    if (!canScrollGallery || galleryImages.length === 0) return;
+    const interval = setInterval(handleGalleryNext, 4500);
+    return () => clearInterval(interval);
+  }, [canScrollGallery, galleryImages.length, handleGalleryNext]);
 
   useEffect(() => {
     imageSlides.forEach(({ image }) => {
@@ -375,6 +452,71 @@ export const About = ({ showHistory = true }: AboutProps) => {
           </div>
         </div>
       </div>
+
+      {galleryImages.length > 0 && (
+        <div className="container mx-auto px-2 sm:px-4 mt-32 mb-16">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-slate-900">{t('about.gallery_title')}</h2>
+            <div className="w-20 h-1 bg-orange-500 mx-auto mt-4"></div>
+          </div>
+
+          <div className="relative w-full">
+            {canScrollGallery && (
+              <>
+                <button
+                  type="button"
+                  onClick={handleGalleryPrev}
+                  className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 z-30 bg-black/30 hover:bg-black/45 backdrop-blur-sm text-white p-1.5 rounded-full transition-all shadow-lg"
+                  aria-label="Anterior"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleGalleryNext}
+                  className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 z-30 bg-black/30 hover:bg-black/45 backdrop-blur-sm text-white p-1.5 rounded-full transition-all shadow-lg"
+                  aria-label="Siguiente"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </>
+            )}
+
+            <div className="overflow-x-hidden overflow-y-visible py-4">
+              <div
+                ref={gallerySliderRef}
+                className={`flex items-stretch ${canScrollGallery && galleryTransitioning ? 'transition-transform duration-500 ease-in-out' : ''}`}
+                style={{
+                  transform: canScrollGallery
+                    ? `translateX(-${(galleryIndex * 100) / gallerySlidesToShow}%)`
+                    : undefined,
+                }}
+                onTransitionEnd={handleGalleryTransitionEnd}
+              >
+                {infiniteGallery.map((image, index) => (
+                  <div
+                    key={`${index}-${image.id}`}
+                    className="shrink-0 px-1.5 sm:px-2 group/slide relative hover:z-30"
+                    style={{
+                      width: `${100 / (canScrollGallery ? gallerySlidesToShow : galleryEffectiveSlides)}%`,
+                    }}
+                  >
+                    <div className="aspect-4/3 w-full rounded-sm overflow-hidden shadow-lg bg-slate-200 relative transition-all duration-300 ease-out group-hover/slide:scale-[1.04] group-hover/slide:shadow-xl origin-center">
+                      <img
+                        src={image.image_url}
+                        alt={`${galleryAltPrefix} ${(index % galleryImages.length) + 1}`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

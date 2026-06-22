@@ -15,6 +15,7 @@ import { Admin } from './pages/Admin';
 import { AdminLogin } from './pages/AdminLogin';
 import { AdminNewsForm } from './pages/AdminNewsForm';
 import { AdminImages } from './pages/AdminImages';
+import { AdminGallery } from './pages/AdminGallery';
 import { BoletinesPage } from './pages/BulletinsPage';
 import { AdminBoletines } from './pages/AdminBulletin';
 import { AdminBoletinesForm } from './pages/AdminBulletinForm';
@@ -84,6 +85,7 @@ const AppRoutes = () => (
       <Route path="noticias/nueva" element={<AdminNewsForm />} />
       <Route path="noticias/:id/editar" element={<AdminNewsForm />} />
       <Route path="imagenes" element={<AdminImages />} />
+      <Route path="galeria" element={<AdminGallery />} />
       <Route path="boletines" element={<AdminBoletines />} />
       <Route path="boletines/nuevo" element={<AdminBoletinesForm />} />
       <Route path="boletines/:id/editar" element={<AdminBoletinesForm />} />
