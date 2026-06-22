@@ -10,8 +10,8 @@ const ABOUT_IMAGE_IDS: SiteImageId[] = ['about_1', 'about_2', 'about_3'];
 
 const imageVariants = {
   enter: (direction: number) => ({
-    x: direction > 0 ? 400 : -400,
-    opacity: 0,
+    x: direction > 0 ? '100%' : '-100%',
+    opacity: 1,
   }),
   center: {
     zIndex: 1,
@@ -20,12 +20,16 @@ const imageVariants = {
   },
   exit: (direction: number) => ({
     zIndex: 0,
-    x: direction < 0 ? 400 : -400,
-    opacity: 0,
+    x: direction < 0 ? '100%' : '-100%',
+    opacity: 1,
   }),
 };
 
-export const About = () => {
+interface AboutProps {
+  showHistory?: boolean;
+}
+
+export const About = ({ showHistory = true }: AboutProps) => {
   const { t, getLink } = useLanguage();
   const { getImageUrl, getAltText } = useSiteImages();
 
@@ -48,6 +52,13 @@ export const About = () => {
   const sliderRef = React.useRef<HTMLDivElement>(null);
 
   const values = t('about.values');
+
+  useEffect(() => {
+    imageSlides.forEach(({ image }) => {
+      const img = new Image();
+      img.src = image;
+    });
+  }, [imageSlides]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -146,7 +157,7 @@ export const About = () => {
       <div className="container mx-auto px-4 md:px-8">
         <div className="flex flex-col lg:flex-row items-center gap-16">
           <div className="lg:w-1/2 relative">
-            <div className="relative z-10 rounded-sm overflow-hidden shadow-2xl aspect-4/3">
+            <div className="relative z-10 rounded-sm overflow-hidden shadow-2xl aspect-4/3 bg-slate-200">
               <AnimatePresence initial={false} custom={imageDirection}>
                 <motion.div
                   key={imageSlide}
@@ -157,7 +168,6 @@ export const About = () => {
                   exit="exit"
                   transition={{
                     x: { type: 'spring', stiffness: 300, damping: 30 },
-                    opacity: { duration: 0.2 },
                   }}
                   className="absolute inset-0"
                 >
@@ -165,6 +175,8 @@ export const About = () => {
                     src={imageSlides[imageSlide].image}
                     alt={imageSlides[imageSlide].alt}
                     className="w-full h-full object-cover"
+                    loading="eager"
+                    decoding="async"
                   />
                 </motion.div>
               </AnimatePresence>
@@ -238,63 +250,61 @@ export const About = () => {
           </div>
         </div>
       </div>
-      <div className="container mx-auto px-4 md:px-8 mt-32">
-        <Boletines />
-      </div>
+      
 
-      {/* Sección Nuestra Historia */}
-      <div className="container mx-auto px-4 md:px-8 mt-32">
-        <div className="text-center mb-16">
-          <span className="text-orange-500 font-bold tracking-widest uppercase text-sm">{t('about.history_title')}</span>
-          <div className="w-20 h-1 bg-orange-500 mx-auto mt-4 mb-8"></div>
-        </div>
-
-        <div className="max-w-4xl mx-auto">
-          <p className="text-slate-800 text-lg leading-relaxed mb-6 text-center italic">
-            {t('about.history_intro')}
-          </p>
-
-          <div className="bg-slate-50 rounded-sm p-8 md:p-12 shadow-lg">
-            <p className="text-slate-700 leading-relaxed mb-6">
-              {t('about.history_p1')}
-            </p>
-            <p className="text-slate-700 leading-relaxed">
-              {t('about.history_p2')}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Sección Visión y Misión */}
-      <div className="container mx-auto px-4 md:px-8 mt-32">
-        <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          {/* Visión */}
-          <div className="bg-linear-to-br from-orange-500 to-orange-600 rounded-sm p-10 text-white shadow-xl">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="bg-white/20 p-3 rounded-sm">
-                <Eye className="w-8 h-8" />
-              </div>
-              <h3 className="text-3xl font-bold">{t('about.vision_title')}</h3>
+      {showHistory && (
+        <>
+          <div className="container mx-auto px-4 md:px-8 mt-32">
+            <div className="text-center mb-16">
+              <span className="text-orange-500 font-bold tracking-widest uppercase text-sm">{t('about.history_title')}</span>
+              <div className="w-20 h-1 bg-orange-500 mx-auto mt-4 mb-8"></div>
             </div>
-            <p className="text-white/95 leading-relaxed text-lg text-justify">
-              {t('about.vision_text')}
-            </p>
+
+            <div className="max-w-4xl mx-auto">
+              <p className="text-slate-800 text-lg leading-relaxed mb-6 text-center italic">
+                {t('about.history_intro')}
+              </p>
+
+              <div className="bg-slate-50 rounded-sm p-8 md:p-12 shadow-lg">
+                <p className="text-slate-700 leading-relaxed mb-6">
+                  {t('about.history_p1')}
+                </p>
+                <p className="text-slate-700 leading-relaxed">
+                  {t('about.history_p2')}
+                </p>
+              </div>
+            </div>
           </div>
 
-          {/* Misión */}
-          <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-sm p-10 text-white shadow-xl">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="bg-orange-500/20 p-3 rounded-sm">
-                <Target className="w-8 h-8 text-orange-400" />
+          <div className="container mx-auto px-4 md:px-8 mt-32">
+            <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+              <div className="bg-linear-to-br from-orange-500 to-orange-600 rounded-sm p-10 text-white shadow-xl">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="bg-white/20 p-3 rounded-sm">
+                    <Eye className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-3xl font-bold">{t('about.vision_title')}</h3>
+                </div>
+                <p className="text-white/95 leading-relaxed text-lg text-justify">
+                  {t('about.vision_text')}
+                </p>
               </div>
-              <h3 className="text-3xl font-bold">{t('about.mission_title')}</h3>
+
+              <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-sm p-10 text-white shadow-xl">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="bg-orange-500/20 p-3 rounded-sm">
+                    <Target className="w-8 h-8 text-orange-400" />
+                  </div>
+                  <h3 className="text-3xl font-bold">{t('about.mission_title')}</h3>
+                </div>
+                <p className="text-white/95 leading-relaxed text-lg text-justify">
+                  {t('about.mission_text')}
+                </p>
+              </div>
             </div>
-            <p className="text-white/95 leading-relaxed text-lg text-justify">
-              {t('about.mission_text')}
-            </p>
           </div>
-        </div>
-      </div>
+        </>
+      )}
 
       {/* Sección Valores */}
       <div className="container mx-auto px-4 md:px-8 mt-32 mb-16">
