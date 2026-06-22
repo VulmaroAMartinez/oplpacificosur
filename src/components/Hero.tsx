@@ -33,6 +33,14 @@ export const Hero = () => {
   const [phase, setPhase] = useState<'start' | 'pause' | 'highlight' | 'done'>('start');
   const [cursorVisible, setCursorVisible] = useState(true);
 
+  // Precargar imágenes del carrusel
+  useEffect(() => {
+    slides.forEach(({ image }) => {
+      const img = new Image();
+      img.src = image;
+    });
+  }, [slides]);
+
   // Slideshow interval
   useEffect(() => {
     const timer = setInterval(() => {
@@ -110,23 +118,23 @@ export const Hero = () => {
 
   const variants = {
     enter: (direction: number) => ({
-      x: direction > 0 ? 1000 : -1000,
-      opacity: 0
+      x: direction > 0 ? '100%' : '-100%',
+      opacity: 1,
     }),
     center: {
       zIndex: 1,
       x: 0,
-      opacity: 1
+      opacity: 1,
     },
     exit: (direction: number) => ({
       zIndex: 0,
-      x: direction < 0 ? 1000 : -1000,
-      opacity: 0
-    })
+      x: direction < 0 ? '100%' : '-100%',
+      opacity: 1,
+    }),
   };
 
   return (
-    <section id="inicio" className="relative h-screen min-h-[600px] flex items-center overflow-hidden">
+    <section id="inicio" className="relative h-screen min-h-[600px] flex items-center overflow-hidden bg-slate-900">
       {/* Background Image Carousel */}
       <AnimatePresence initial={false} custom={direction}>
         <motion.div
@@ -137,8 +145,7 @@ export const Hero = () => {
           animate="center"
           exit="exit"
           transition={{
-            x: { type: "spring", stiffness: 300, damping: 30 },
-            opacity: { duration: 0.2 }
+            x: { type: 'spring', stiffness: 300, damping: 30 },
           }}
           className="absolute inset-0 z-0"
         >
@@ -146,6 +153,8 @@ export const Hero = () => {
             src={slides[currentSlide].image}
             alt={slides[currentSlide].alt}
             className="w-full h-full object-cover"
+            loading="eager"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-linear-to-r from-slate-900/90 via-slate-900/60 to-transparent" />
         </motion.div>
