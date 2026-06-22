@@ -63,10 +63,12 @@ export const Home = () => {
 
       <Services variant="preview" />
 
-      <About />
+      <About showHistory={false} />
 
       {/* Boletines Informativos section */}
-      
+      <div className="container mx-auto px-4 md:px-8 mt-32">
+        <Boletines />
+      </div>
 
       {/* Latest News section */}
       <section className="py-20 bg-slate-50">
